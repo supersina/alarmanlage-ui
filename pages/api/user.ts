@@ -7,6 +7,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 export default (req: NextApiRequest, res: NextApiResponse) => {
   res.status(200).json({ name: "John Doe" });
 };
+
 // async function main() {
 //   let includePosts: boolean = false;
 //   let user: Prisma.UserCreateInput;
