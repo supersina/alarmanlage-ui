@@ -1,23 +1,24 @@
-import { PrismaClient, Prisma } from "@prisma/client";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-import type { NextApiRequest, NextApiResponse } from "next";
+export default async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method !== "POST") {
+    return res.status(405).json({ message: "Method not allowed" });
+  }
 
-export default (req: NextApiRequest, res: NextApiResponse) => {
-  res.status(200).json({ name: "John Doe" });
+  const userData = JSON.parse(req.body);
+  const savedUser = await prisma.user.create({ data: userData });
+
+  res.json(savedUser);
+  // if (method === "GET") {
+  //   return res.status(200).json(prisma.user);
+  // }
+
+  // if (method === "POST") {
+  //   const { body } = req;
+  //   prisma.user.create({ ...body });
+  //   return res.status(200).json(prisma.user);
+  // }
 };
-
-// async function main() {
-//   let includePosts: boolean = false;
-//   let user: Prisma.UserCreateInput;
-
-//   // Check if posts should be included in the query
-//   user = {
-//     email: "elsa@prisma.io",
-//     name: "Elsa Prisma",
-//   };
-
-//   // Pass 'user' object into query
-//   const createUser = await prisma.user.create({ data: user });
-// }

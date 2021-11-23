@@ -1,9 +1,12 @@
 import { Box, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSession } from "next-auth/client";
 import { colors } from "../theme/colors";
 
 export const Navbar = () => {
+  const [session] = useSession();
+
   return (
     <>
       <Flex
@@ -33,9 +36,13 @@ export const Navbar = () => {
           <Link href="/">
             <a>Start</a>
           </Link>
-          <Link href="/zuhause">
-            <a>Zuhause</a>
-          </Link>
+          {session ? (
+            <Link href="/zuhause">
+              <a>Zuhause</a>
+            </Link>
+          ) : (
+            <></>
+          )}
           <Link href="/about">
             <a>Über uns</a>
           </Link>

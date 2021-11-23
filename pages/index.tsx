@@ -1,9 +1,9 @@
-import Head from "next/head";
-import Image from "next/image";
+import { useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/client";
+
+import Head from "next/head";
 import { Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
-
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 
@@ -53,13 +53,11 @@ export default function Home() {
             <LargeContainer>
               <Button
                 marginTop="2rem"
+                marginRight="2rem"
                 colorScheme="yellow"
                 onClick={() => signIn()}
               >
                 Sign In
-              </Button>
-              <Button marginTop="2rem" colorScheme="yellow">
-                Create User
               </Button>
             </LargeContainer>
           </>
