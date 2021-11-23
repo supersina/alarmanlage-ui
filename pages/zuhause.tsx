@@ -1,17 +1,39 @@
 import Head from "next/head";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/client";
-import { Heading, Text } from "@chakra-ui/layout";
+import { useState } from "react";
+import { Flex, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 
-export default function Zuhause() {
-  const [session, loading] = useSession();
+import { PrismaClient, Prisma, User } from "@prisma/client";
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+const prisma = new PrismaClient();
+
+export async function getServerSideProps() {
+  const users: User[] = await prisma.user.findMany();
+  return {
+    props: {
+      initialUsers: users,
+    },
+  };
+}
+
+// async function saveUser(user: Prisma.UserCreateInput) {
+//   const response = await fetch("/api/user", {
+//     method: "POST",
+//     body: JSON.stringify(user),
+//   });
+//   if (!response.ok) {
+//     throw new Error(response.statusText);
+//   }
+//   return await response.json();
+// }
+
+export default function Zuhause({ initialUsers }) {
+  const [session] = useSession();
+  const [users, setUsers] = useState<User[]>(initialUsers);
 
   return (
     <>
@@ -51,6 +73,17 @@ export default function Zuhause() {
               >
                 Sign out
               </Button>{" "}
+            </LargeContainer>
+            <LargeContainer>
+              <Text>Data:</Text>
+              {users.map((user: User, index: number) => {
+                return (
+                  <Flex key={index}>
+                    <Text>User is {user.name}</Text>
+                    <Text>Email is {user.email}</Text>
+                  </Flex>
+                );
+              })}
             </LargeContainer>
           </>
         ) : (
