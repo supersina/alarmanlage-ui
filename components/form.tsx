@@ -3,7 +3,7 @@ import { useState } from "react";
 
 async function saveUser(user) {
   const response = await fetch("/api/user", {
-    method: "UPDATE",
+    method: "PATCH",
     body: JSON.stringify(user),
   });
   if (!response.ok) {
@@ -17,6 +17,7 @@ export const EditForm = ({ initialUser }) => {
   const [usr, setUsr] = useState({
     name: name,
     email: email,
+    newEmail: email,
     image: image,
   });
 
@@ -39,8 +40,8 @@ export const EditForm = ({ initialUser }) => {
         onChange={updateData}
       />
       <Input
-        name="email"
-        value={usr.email ? usr.email : ""}
+        name="newEmail"
+        value={usr.newEmail ? usr.newEmail : ""}
         onChange={updateData}
       />
       <Input

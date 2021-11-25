@@ -4,7 +4,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  if (req.method !== "POST" && req.method !== "UPDATE") {
+  if (req.method !== "POST" && req.method !== "PATCH") {
     return res.status(405).json({ message: "Method not allowed" });
   }
   const userData = JSON.parse(req.body);
@@ -15,13 +15,14 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     res.json(savedUser);
   }
 
-  if (req.method == "UPDATE") {
+  if (req.method == "PATCH") {
     const updatedUser = await prisma.user.update({
       where: {
-        email: "sinschkoli@gmail.com",
+        email: userData.email,
       },
       data: {
-        name: "Sinsch",
+        name: userData.name,
+        email: userData.newEmail,
       },
     });
     res.json(updatedUser);

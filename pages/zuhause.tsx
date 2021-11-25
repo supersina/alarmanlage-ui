@@ -62,6 +62,7 @@ export default function Zuhause({ initialUsers }) {
         {session ? (
           <>
             <LargeContainer>
+              {console.log(session.user)}
               <Text>
                 Du bist eingeloggt als{" "}
                 {session.user.name ? session.user.name : session.user.email}
