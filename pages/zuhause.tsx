@@ -8,6 +8,7 @@ import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 
 import { PrismaClient, Prisma, User } from "@prisma/client";
+import { EditForm } from "../components/form";
 
 const prisma = new PrismaClient();
 
@@ -19,7 +20,6 @@ export async function getServerSideProps() {
     },
   };
 }
-
 // async function saveUser(user: Prisma.UserCreateInput) {
 //   const response = await fetch("/api/user", {
 //     method: "POST",
@@ -74,7 +74,7 @@ export default function Zuhause({ initialUsers }) {
                 Sign out
               </Button>{" "}
             </LargeContainer>
-            <LargeContainer>
+            {/* <LargeContainer>
               <Text>Data:</Text>
               {users.map((user: User, index: number) => {
                 return (
@@ -84,7 +84,7 @@ export default function Zuhause({ initialUsers }) {
                   </Flex>
                 );
               })}
-            </LargeContainer>
+            </LargeContainer> */}
           </>
         ) : (
           <>
@@ -100,6 +100,9 @@ export default function Zuhause({ initialUsers }) {
           </>
         )}
       </Hero>
+      <LargeContainer>
+        {session ? <EditForm initialUser={session.user} /> : <></>}
+      </LargeContainer>
     </>
   );
 }
