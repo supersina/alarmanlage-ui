@@ -1,39 +1,27 @@
 import Head from "next/head";
-import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/client";
-import { useState } from "react";
-import { Flex, Heading, Text } from "@chakra-ui/layout";
+import { Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
-
-import { PrismaClient, Prisma, User } from "@prisma/client";
+import { prismaClient } from "../prismaClient";
+import { Alarm } from "@prisma/client";
+import { AlarmTable } from "../components/alarm-table";
 import { EditForm } from "../components/form";
-
-const prisma = new PrismaClient();
+import { useState } from "react";
 
 export async function getServerSideProps() {
-  const users: User[] = await prisma.user.findMany();
+  const alarms: Alarm[] = await prismaClient.alarm.findMany();
   return {
     props: {
-      initialUsers: users,
+      initialAlarms: alarms,
     },
   };
 }
-// async function saveUser(user: Prisma.UserCreateInput) {
-//   const response = await fetch("/api/user", {
-//     method: "POST",
-//     body: JSON.stringify(user),
-//   });
-//   if (!response.ok) {
-//     throw new Error(response.statusText);
-//   }
-//   return await response.json();
-// }
 
-export default function Zuhause({ initialUsers }) {
+export default function Zuhause({ initialAlarms }) {
   const [session] = useSession();
-  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [alarms, setAlarms] = useState<Alarm[]>(initialAlarms);
 
   return (
     <>
@@ -75,17 +63,6 @@ export default function Zuhause({ initialUsers }) {
                 Sign out
               </Button>{" "}
             </LargeContainer>
-            {/* <LargeContainer>
-              <Text>Data:</Text>
-              {users.map((user: User, index: number) => {
-                return (
-                  <Flex key={index}>
-                    <Text>User is {user.name}</Text>
-                    <Text>Email is {user.email}</Text>
-                  </Flex>
-                );
-              })}
-            </LargeContainer> */}
           </>
         ) : (
           <>
@@ -102,7 +79,14 @@ export default function Zuhause({ initialUsers }) {
         )}
       </Hero>
       <LargeContainer>
-        {session ? <EditForm initialUser={session.user} /> : <></>}
+        {session ? (
+          <>
+            <AlarmTable alarms={alarms} />
+            <EditForm initialUser={session.user} />
+          </>
+        ) : (
+          <></>
+        )}
       </LargeContainer>
     </>
   );
