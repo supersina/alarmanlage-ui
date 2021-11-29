@@ -48,6 +48,7 @@ model User {
   email         String?   @unique
   emailVerified DateTime? @map(name: "email_verified")
   image         String?
+  alarms        Alarm[]
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @default(now()) @map(name: "updated_at")
 
@@ -55,12 +56,20 @@ model User {
 }
 
 model VerificationRequest {
-  id         Int      @default(autoincrement()) @id
+  id         Int        @default(autoincrement()) @id
   identifier String
-  token      String   @unique
+  token      String     @unique
   expires    DateTime
   createdAt  DateTime  @default(now()) @map(name: "created_at")
   updatedAt  DateTime  @default(now()) @map(name: "updated_at")
 
   @@map(name: "verification_requests")
+}
+
+model Alarm {
+  id            Int       @default(autoincrement()) @id
+  user          User      @relation(fields:[userId], references: [id])
+  userId        Int
+  place         String?
+  createdAt     DateTime  @default(now()) @map(name: "created_at")
 }

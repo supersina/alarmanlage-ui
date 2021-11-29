@@ -1,5 +1,6 @@
 import { Button, Flex, IconButton, Input } from "@chakra-ui/react";
 import { useState } from "react";
+import { LargeContainer } from "./container";
 
 async function saveUser(user) {
   const response = await fetch("/api/user", {
@@ -33,23 +34,25 @@ export const EditForm = ({ initialUser }) => {
   }
 
   return (
-    <Flex direction="column" width="50%" margin="2rem">
-      <Input
-        name="name"
-        value={usr.name ? usr.name : ""}
-        onChange={updateData}
-      />
-      <Input
-        name="newEmail"
-        value={usr.newEmail ? usr.newEmail : ""}
-        onChange={updateData}
-      />
-      <Input
-        name="image"
-        value={usr.image ? usr.image : ""}
-        onChange={updateData}
-      />
-      <Button onClick={saveUpdates}>Änderungen speichern</Button>
-    </Flex>
+    <LargeContainer>
+      <Flex direction="column" width="50%" margin="2rem">
+        <Input
+          name="name"
+          value={usr.name ? usr.name : ""}
+          onChange={updateData}
+        />
+        <Input
+          name="newEmail"
+          value={usr.newEmail ? usr.newEmail : ""}
+          onChange={updateData}
+        />
+        <Input
+          name="image"
+          value={usr.image ? usr.image : ""}
+          onChange={updateData}
+        />
+        <Button onClick={saveUpdates}>Änderungen speichern</Button>
+      </Flex>
+    </LargeContainer>
   );
 };

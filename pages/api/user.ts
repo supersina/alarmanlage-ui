@@ -1,7 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prismaClient } from "../../prismaClient";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== "POST" && req.method !== "PATCH") {
@@ -11,12 +9,12 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   console.log(userData);
 
   if (req.method == "POST") {
-    const savedUser = await prisma.user.create({ data: userData });
+    const savedUser = await prismaClient.user.create({ data: userData });
     res.json(savedUser);
   }
 
   if (req.method == "PATCH") {
-    const updatedUser = await prisma.user.update({
+    const updatedUser = await prismaClient.user.update({
       where: {
         email: userData.email,
       },
