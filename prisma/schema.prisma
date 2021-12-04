@@ -49,6 +49,7 @@ model User {
   emailVerified DateTime? @map(name: "email_verified")
   image         String?
   alarms        Alarm[]
+  sensorStatus  SensorStatus[]
   createdAt     DateTime  @default(now()) @map(name: "created_at")
   updatedAt     DateTime  @default(now()) @map(name: "updated_at")
 
@@ -70,6 +71,13 @@ model Alarm {
   id            Int       @default(autoincrement()) @id
   user          User      @relation(fields:[userId], references: [id])
   userId        Int
-  place         String?
+  sensor         String?
   createdAt     DateTime  @default(now()) @map(name: "created_at")
+}
+
+model SensorStatus {
+  id            Int       @default(autoincrement()) @id
+  user          User      @relation(fields:[userId], references: [id])
+  userId        Int
+  status        Int
 }

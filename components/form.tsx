@@ -1,4 +1,4 @@
-import { Button, Flex, IconButton, Input } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import { LargeContainer } from "./container";
 
@@ -10,6 +10,7 @@ async function saveUser(user) {
   if (!response.ok) {
     throw new Error(response.statusText);
   }
+
   return await response.json();
 }
 
@@ -35,7 +36,13 @@ export const EditForm = ({ initialUser }) => {
 
   return (
     <LargeContainer>
-      <Flex direction="column" width="50%" margin="2rem">
+      <Flex
+        direction="column"
+        width="50%"
+        margin="2rem"
+        justifyContent="center"
+        alignItems="center"
+      >
         <Input
           name="name"
           value={usr.name ? usr.name : ""}
@@ -46,11 +53,7 @@ export const EditForm = ({ initialUser }) => {
           value={usr.newEmail ? usr.newEmail : ""}
           onChange={updateData}
         />
-        <Input
-          name="image"
-          value={usr.image ? usr.image : ""}
-          onChange={updateData}
-        />
+
         <Button onClick={saveUpdates}>Änderungen speichern</Button>
       </Flex>
     </LargeContainer>

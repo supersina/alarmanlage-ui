@@ -20,7 +20,7 @@ export const AlarmTable = ({ alarms }) => {
           <Thead>
             <Tr>
               <Th>ID</Th>
-              <Th>Place</Th>
+              <Th>Sensor</Th>
               <Th>Time</Th>
               <Th>UserID</Th>
             </Tr>
@@ -30,7 +30,7 @@ export const AlarmTable = ({ alarms }) => {
               return (
                 <Tr key={alarm.id}>
                   <Th>{alarm.id}</Th>
-                  <Th>{alarm.place}</Th>
+                  <Th>{alarm.sensor}</Th>
                   <Th>
                     {new Intl.DateTimeFormat("de", {
                       year: "numeric",
