@@ -14,7 +14,7 @@ export const Navbar = () => {
         justify="space-between"
         wrap="wrap"
         width="100%"
-        marginBottom="4rem"
+        // marginBottom="1rem"
         borderBottom="1px solid #eaeaea"
         p={{ base: 2, sm: 2 }}
         pr={{ base: 2, sm: 8 }}

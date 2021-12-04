@@ -21,6 +21,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       data: {
         name: userData.name,
         email: userData.newEmail,
+        image: userData.image,
       },
     });
     res.json(updatedUser);
