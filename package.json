@@ -1,11 +1,20 @@
 {
   "name": "alarmanlage-ui",
   "private": true,
+  "prisma": {
+    "seed": "node --require esbuild-register prisma/seed.ts"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prisma:generate": "prisma generate",
+    "prisma:db:push": "prisma db push",
+    "prisma:migrate": "prisma migrate dev --preview-feature",
+    "prisma:studio": "prisma studio",
+    "preprisma:seed": "prisma db push --force-reset",
+    "prisma:seed": "npx prisma db seed"
   },
   "dependencies": {
     "@chakra-ui/icons": "^1.1.1",
@@ -13,6 +22,7 @@
     "@emotion/react": "^11.5.0",
     "@emotion/styled": "^11.3.0",
     "babel-plugin-superjson-next": "^0.4.2",
+    "esbuild-register": "^3.2.0",
     "framer-motion": "^4.1.17",
     "next": "12.0.2",
     "next-auth": "^3.29.0",
@@ -21,11 +31,13 @@
     "superjson": "^1.8.0"
   },
   "devDependencies": {
-    "@types/node": "16.11.6",
+    "@types/node": "^16.11.6",
     "@types/react": "17.0.33",
     "eslint": "7.32.0",
     "eslint-config-next": "12.0.2",
     "prisma": "^3.3.0",
+    "ts-node": "^10.4.0",
+    "tslib": "^2.3.1",
     "typescript": "4.4.4"
   }
 }
