@@ -11,7 +11,7 @@ generator client {
 }
 
 model Account {
-  id                 Int       @default(autoincrement()) @id
+  id                 Int       @id @default(autoincrement())
   compoundId         String    @unique @map(name: "compound_id")
   userId             Int       @map(name: "user_id")
   providerType       String    @map(name: "provider_type")
@@ -22,62 +22,73 @@ model Account {
   accessTokenExpires DateTime? @map(name: "access_token_expires")
   createdAt          DateTime  @default(now()) @map(name: "created_at")
   updatedAt          DateTime  @default(now()) @map(name: "updated_at")
-
   @@index([providerAccountId], name: "providerAccountId")
   @@index([providerId], name: "providerId")
   @@index([userId], name: "userId")
-
   @@map(name: "accounts")
 }
 
 model Session {
-  id           Int      @default(autoincrement()) @id
+  id           Int      @id @default(autoincrement())
   userId       Int      @map(name: "user_id")
   expires      DateTime
   sessionToken String   @unique @map(name: "session_token")
   accessToken  String   @unique @map(name: "access_token")
   createdAt    DateTime @default(now()) @map(name: "created_at")
   updatedAt    DateTime @default(now()) @map(name: "updated_at")
-
   @@map(name: "sessions")
 }
 
 model User {
-  id            Int       @default(autoincrement()) @id
+  id            Int           @id @default(autoincrement())
   name          String?
-  email         String?   @unique
-  emailVerified DateTime? @map(name: "email_verified")
+  email         String?       @unique
+  emailVerified DateTime?     @map(name: "email_verified")
   image         String?
-  alarms        Alarm[]
-  sensorStatus  SensorStatus[]
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
-  updatedAt     DateTime  @default(now()) @map(name: "updated_at")
-
+  alarmSystems  AlarmSystem[]
+  createdAt     DateTime      @default(now()) @map(name: "created_at")
+  updatedAt     DateTime      @default(now()) @map(name: "updated_at")
   @@map(name: "users")
 }
 
 model VerificationRequest {
-  id         Int        @default(autoincrement()) @id
+  id         Int      @id @default(autoincrement())
   identifier String
-  token      String     @unique
+  token      String   @unique
   expires    DateTime
-  createdAt  DateTime  @default(now()) @map(name: "created_at")
-  updatedAt  DateTime  @default(now()) @map(name: "updated_at")
-
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @default(now()) @map(name: "updated_at")
   @@map(name: "verification_requests")
 }
 
-model Alarm {
-  id            Int       @default(autoincrement()) @id
-  user          User      @relation(fields:[userId], references: [id])
-  userId        Int
-  sensor         String?
-  createdAt     DateTime  @default(now()) @map(name: "created_at")
+model AlarmSystem {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  isActive  Boolean
+  sensors   Sensor[]
+  apiToken  String   @unique @default(cuid())
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @default(now()) @map(name: "updated_at")
 }
 
-model SensorStatus {
-  id            Int       @default(autoincrement()) @id
-  user          User      @relation(fields:[userId], references: [id])
-  userId        Int
-  status        Int
+model Sensor {
+  id               Int           @id @default(autoincrement())
+  alarmSystem      AlarmSystem   @relation(fields: [alarmSystemId], references: [id])
+  alarmSystemId    Int
+  name             String
+  sensorCodeOpen   String
+  sensorCodeClosed String
+  sensorEvents     SensorEvent[]
+  createdAt        DateTime      @default(now()) @map(name: "created_at")
+  updatedAt        DateTime      @default(now()) @map(name: "updated_at")
+}
+
+model SensorEvent {
+  id         Int      @id @default(autoincrement())
+  sensorId   Int
+  sensor     Sensor   @relation(fields: [sensorId], references: [id])
+  sensorCode String
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @default(now()) @map(name: "updated_at")
 }

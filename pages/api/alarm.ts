@@ -8,6 +8,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const userData = JSON.parse(req.body);
   console.log(userData);
 
-  const savedAlarms = await prismaClient.alarm.findMany();
-  res.json(savedAlarms);
+  const alarmSystem = await prismaClient.alarmSystem.findMany();
+  res.json(alarmSystem);
 };

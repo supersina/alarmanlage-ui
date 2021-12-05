@@ -5,27 +5,25 @@ import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 import { prismaClient } from "../prismaClient";
-import { Alarm, User } from "@prisma/client";
-import { AlarmTable } from "../components/alarm-table";
+// import { Alarm, User, SensorStatus } from "@prisma/client";
+// import { AlarmTable } from "../components/alarm-table";
 import { EditForm } from "../components/form";
 import { useState } from "react";
 import { WelcomeHomeArea } from "../components/welcome-home-area";
 
-export async function getServerSideProps() {
-  const alarms: Alarm[] = await prismaClient.alarm.findMany();
-  // const user: User[] = await prismaClient.user.findUnique(where);
+// export async function getServerSideProps() {
+//   // const alarms: Alarm[] = await prismaClient.alarm.findMany();
+//   // return {
+//   //   props: {
+//   //     initialAlarms: alarms,
+//   //   },
+//   // };
+// }
 
-  return {
-    props: {
-      initialAlarms: alarms,
-      // initialUser: user,
-    },
-  };
-}
-
-export default function Zuhause({ initialAlarms }) {
+export default function Zuhause() {
   const [session] = useSession();
-  const [alarms, setAlarms] = useState<Alarm[]>(initialAlarms);
+  // const [alarms, setAlarms] = useState<Alarm[]>(initialAlarms);
+
   // const user = initialUser;
   return (
     <>
@@ -102,7 +100,10 @@ export default function Zuhause({ initialAlarms }) {
       <LargeContainer>
         {session ? (
           <>
-            <AlarmTable alarms={alarms} />
+            {/* <AlarmTable
+              alarms={alarms}
+              sensorStatuses={initialSensorStatuses}
+            /> */}
           </>
         ) : (
           <></>
