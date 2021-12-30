@@ -1,18 +1,15 @@
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { Flex, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
-import { prismaClient } from "../prismaClient";
 // import { Alarm, User } from "@prisma/client";
 // import { AlarmTable } from "../components/alarm-table";
-import { EditForm } from "../components/form";
-import { useState } from "react";
-import { WelcomeHomeArea } from "../components/welcome-home-area";
+import { EditUsrDataForm } from "../components/edit-usr-data-form";
 
 export default function Settings() {
-  const [session] = useSession();
+  const { data: session } = useSession();
   return (
     <>
       <Head>
@@ -77,7 +74,8 @@ export default function Settings() {
           <>
             <Flex width="100%" direction="column">
               <Heading as="h2"> Deine persönlichen Daten</Heading>
-              <EditForm initialUser={session.user}></EditForm>
+              {console.log("Session Data: ", session.user)}
+              <EditUsrDataForm initialUser={session.user}></EditUsrDataForm>
             </Flex>
           </>
         ) : (

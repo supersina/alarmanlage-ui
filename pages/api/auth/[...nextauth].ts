@@ -1,20 +1,15 @@
 import { NextApiHandler } from "next";
-import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
-import Adapters from "next-auth/adapters";
-
-import { PrismaClient } from "@prisma/client";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import EmailProvider from "next-auth/providers/email";
+import { PrismaClient, User } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// we will define `options` up next
-const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, options);
-export default authHandler;
-
-const options = {
+const options: NextAuthOptions = {
+  // Passwordless / email sign in
   providers: [
-    // Passwordless / email sign in
-    Providers.Email({
+    EmailProvider({
       server: {
         host: process.env.EMAIL_SERVER_HOST,
         port: Number(process.env.EMAIL_SERVER_PORT),
@@ -26,7 +21,15 @@ const options = {
       from: process.env.EMAIL_FROM,
     }),
   ],
-  adapter: Adapters.Prisma.Adapter({ prisma }),
+  callbacks: {
+    session: async (params) => {
+      const { session, user } = params;
+      session.user.id = user.id;
+      return Promise.resolve(session);
+    },
+  },
+  adapter: PrismaAdapter(prisma),
   secret: process.env.SECRET,
-  // database: process.env.DATABASE_URL,
 };
+const authHandler: NextApiHandler = (req, res) => NextAuth(req, res, options);
+export default authHandler;

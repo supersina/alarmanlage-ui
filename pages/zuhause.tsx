@@ -1,30 +1,32 @@
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signIn, signOut, useSession, getSession } from "next-auth/react";
 import { Flex, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
-import { prismaClient } from "../prismaClient";
-// import { Alarm, User, SensorStatus } from "@prisma/client";
-// import { AlarmTable } from "../components/alarm-table";
-import { EditForm } from "../components/form";
-import { useState } from "react";
 import { WelcomeHomeArea } from "../components/welcome-home-area";
+import { UserDataArea } from "../components/usr-data-area";
+import useSWR from "swr";
+import { AlarmSystem, Sensor, SensorEvent } from "@prisma/client";
 
-// export async function getServerSideProps() {
-//   // const alarms: Alarm[] = await prismaClient.alarm.findMany();
-//   // return {
-//   //   props: {
-//   //     initialAlarms: alarms,
-//   //   },
-//   // };
-// }
+type UserDataAreaProps = {
+  alarmsystems: AlarmSystem[];
+};
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Zuhause() {
-  const [session] = useSession();
-  // const [alarms, setAlarms] = useState<Alarm[]>(initialAlarms);
+  const { data: session } = useSession();
 
-  // const user = initialUser;
+  const {
+    data: alarmsystems,
+    error,
+    isValidating,
+  } = useSWR<UserDataAreaProps, Error>("/api/alarmsystems", fetcher);
+  console.log(alarmsystems);
+  if (error) return <div>failed to load</div>;
+  if (isValidating) return <div>loading...</div>;
+
   return (
     <>
       <Head>
@@ -100,10 +102,14 @@ export default function Zuhause() {
       <LargeContainer>
         {session ? (
           <>
-            {/* <AlarmTable
-              alarms={alarms}
-              sensorStatuses={initialSensorStatuses}
-            /> */}
+            {alarmsystems ? (
+              <UserDataArea alarmsystems={alarmsystems}></UserDataArea>
+            ) : (
+              <>
+                <Text>Keine Alarmsysteme vorhanden</Text>
+                <Button>Alarmsystem hinzufügen</Button>
+              </>
+            )}
           </>
         ) : (
           <></>
@@ -112,3 +118,21 @@ export default function Zuhause() {
     </>
   );
 }
+
+// import { GetServerSideProps } from "next";
+// import { useEffect } from "react";
+
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   // Fetch data from API
+//   const url = new URL("api/alarmsystems", process.env.API_URL);
+//   const response = await fetch(url.href, {
+//     method: "GET",
+//     credentials: "include",
+//   });
+//   if (!response.ok) {
+//     throw new Error(response.statusText);
+//   }
+//   const data = await response.json();
+//   // Pass data to the page via props
+//   return { props: { data, session: await getSession(context) } };
+// };

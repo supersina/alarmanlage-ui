@@ -1,11 +1,10 @@
-import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
-import Image from "next/image";
+import { Button, Flex, Heading, Text } from "@chakra-ui/react";
 import Link from "next/link";
 import { LargeContainer } from "./container";
 
 export const WelcomeHomeArea = ({ user }) => {
   const { image, name, email } = user;
-  console.log(user);
+  console.log("welcome home user: ", user);
   return (
     <Flex direction="column" alignItems="center">
       <Text>{name}</Text>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 import Head from "next/head";
 import { Heading, Text } from "@chakra-ui/layout";
@@ -8,7 +8,8 @@ import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 
 export default function Home() {
-  const [session, loading] = useSession();
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
 
   if (loading) {
     return <div>Loading...</div>;

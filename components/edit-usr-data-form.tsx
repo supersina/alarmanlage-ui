@@ -1,8 +1,9 @@
 import { Box, Button, Flex, IconButton, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import { LargeContainer } from "./container";
+import { User } from "@prisma/client";
 
-async function saveUser(user) {
+async function saveUser(user: User) {
   const response = await fetch("/api/user", {
     method: "PATCH",
     body: JSON.stringify(user),
@@ -14,13 +15,28 @@ async function saveUser(user) {
   return await response.json();
 }
 
-export const EditForm = ({ initialUser }) => {
-  const { name, email, image } = initialUser;
+export const EditUsrDataForm = ({ initialUser }) => {
+  console.log(initialUser);
+  const {
+    id,
+    name,
+    email,
+    emailVerified,
+    image,
+    AlarmSystems,
+    createdAt,
+    updatedAt,
+  } = initialUser;
   const [usr, setUsr] = useState({
+    id: id,
     name: name,
     email: email,
+    emailVerified: emailVerified,
     newEmail: email,
     image: image,
+    AlarmSystems: AlarmSystems,
+    createdAt: createdAt,
+    updatedAt: updatedAt,
   });
 
   const updateData = (e) => {
