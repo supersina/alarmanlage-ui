@@ -6,7 +6,6 @@ const statusHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(405).json({ message: "Method not allowed" });
   }
   const userData = JSON.parse(req.body);
-  console.log(userData);
 
   // const updatedSensorStatus = await prismaClient.sensorStatus.update({
   //   where: {

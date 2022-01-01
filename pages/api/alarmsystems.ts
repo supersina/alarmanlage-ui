@@ -16,10 +16,8 @@ const alarmSystemHandler = async (
   res: NextApiResponse
 ) => {
   const session = await getSession({ req });
-  console.log("api req headers", req.headers);
-  console.log("getSession: ", session);
 
-  if (req.method !== "GET") {
+  if (req.method !== "GET" && req.method !== "PATCH") {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
@@ -48,8 +46,23 @@ const alarmSystemHandler = async (
         },
       },
     });
-    console.log("alarmSystem = ", alarmsystems);
+
     res.json({ alarmsystems });
+  }
+
+  if (req.method == "PATCH") {
+    const alarmSystemData = JSON.parse(req.body);
+
+    const updatedAlarmSystem = await prismaClient.alarmSystem.update({
+      where: { id: alarmSystemData.id },
+      //todo, inkludieren: userId: session?.user.id,
+
+      data: {
+        name: alarmSystemData.name,
+        isActive: alarmSystemData.isActive,
+      },
+    });
+    res.json(updatedAlarmSystem);
   }
 };
 

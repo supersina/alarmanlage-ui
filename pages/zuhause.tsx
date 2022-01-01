@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { signIn, signOut, useSession, getSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { Flex, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
@@ -7,7 +7,8 @@ import { Hero } from "../components/hero";
 import { WelcomeHomeArea } from "../components/welcome-home-area";
 import { UserDataArea } from "../components/usr-data-area";
 import useSWR from "swr";
-import { AlarmSystem, Sensor, SensorEvent } from "@prisma/client";
+import { AlarmSystem, Session } from "@prisma/client";
+import { colors } from "../theme/colors";
 
 type UserDataAreaProps = {
   alarmsystems: AlarmSystem[];
@@ -23,7 +24,7 @@ export default function Zuhause() {
     error,
     isValidating,
   } = useSWR<UserDataAreaProps, Error>("/api/alarmsystems", fetcher);
-  console.log(alarmsystems);
+
   if (error) return <div>failed to load</div>;
   if (isValidating) return <div>loading...</div>;
 
@@ -35,7 +36,7 @@ export default function Zuhause() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Hero src={"/about1600x500.jpg"}>
+      <Hero src={"/307-1600x500.jpg"}>
         {session ? (
           <>
             <Flex width="100%" justifyContent="flex-end">
@@ -55,7 +56,11 @@ export default function Zuhause() {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Heading as="h1" variant="large">
+                <Heading
+                  as="h1"
+                  backgroundColor={colors.mainColor}
+                  variant="large"
+                >
                   Willkommen in Deinem sicheren Zuhause!
                 </Heading>
                 <Text>
@@ -103,8 +108,9 @@ export default function Zuhause() {
         {session ? (
           <>
             {alarmsystems ? (
-              <UserDataArea alarmsystems={alarmsystems}></UserDataArea>
+              <Text>Hier erscheinen bald die Alarme deines Alarmsystems</Text>
             ) : (
+              // <UserDataArea alarmsystems={alarmsystems}></UserDataArea>
               <>
                 <Text>Keine Alarmsysteme vorhanden</Text>
                 <Button>Alarmsystem hinzufügen</Button>

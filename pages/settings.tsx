@@ -7,9 +7,35 @@ import { Hero } from "../components/hero";
 // import { Alarm, User } from "@prisma/client";
 // import { AlarmTable } from "../components/alarm-table";
 import { EditUsrDataForm } from "../components/edit-usr-data-form";
+import useSWR from "swr";
+import { AlarmSystem } from "@prisma/client";
+import { UserDataArea } from "../components/usr-data-area";
+import { EditAlarmsystemDataForm } from "../components/edit-alarmsystem-data-form";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+type UserDataAreaProps = {
+  alarmsystems: AlarmSystem[];
+};
 
 export default function Settings() {
   const { data: session } = useSession();
+  const {
+    data: alarmsystems,
+    error: alarmError,
+    isValidating: isValidatingAlarmSystems,
+  } = useSWR<UserDataAreaProps, Error>("/api/alarmsystems", fetcher);
+
+  const {
+    data: userdata,
+    error: userError,
+    isValidating: isValidatingUser,
+  } = useSWR<UserDataAreaProps, Error>("/api/user", fetcher);
+
+  if (alarmError || userError) return <div>failed to load</div>;
+  if (isValidatingAlarmSystems || isValidatingUser)
+    return <div>loading...</div>;
+
   return (
     <>
       <Head>
@@ -74,9 +100,24 @@ export default function Settings() {
           <>
             <Flex width="100%" direction="column">
               <Heading as="h2"> Deine persönlichen Daten</Heading>
-              {console.log("Session Data: ", session.user)}
-              <EditUsrDataForm initialUser={session.user}></EditUsrDataForm>
+              <EditUsrDataForm initialUser={userdata}></EditUsrDataForm>
             </Flex>
+
+            {alarmsystems ? (
+              alarmsystems.alarmsystems.map((alarmsystem) => {
+                return (
+                  <EditAlarmsystemDataForm
+                    alarmsystem={alarmsystem}
+                    key={alarmsystem.id}
+                  ></EditAlarmsystemDataForm>
+                );
+              })
+            ) : (
+              <>
+                <Text>Keine Alarmsysteme vorhanden</Text>
+                <Button>Alarmsystem hinzufügen</Button>
+              </>
+            )}
           </>
         ) : (
           <></>

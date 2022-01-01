@@ -16,27 +16,16 @@ async function saveUser(user: User) {
 }
 
 export const EditUsrDataForm = ({ initialUser }) => {
-  console.log(initialUser);
-  const {
-    id,
-    name,
-    email,
-    emailVerified,
-    image,
-    AlarmSystems,
-    createdAt,
-    updatedAt,
-  } = initialUser;
   const [usr, setUsr] = useState({
-    id: id,
-    name: name,
-    email: email,
-    emailVerified: emailVerified,
-    newEmail: email,
-    image: image,
-    AlarmSystems: AlarmSystems,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
+    id: initialUser.user.id,
+    name: initialUser.user.name,
+    email: initialUser.user.email,
+    emailVerified: initialUser.user.emailVerified,
+    newEmail: initialUser.user.email,
+    image: initialUser.user.image,
+    AlarmSystems: initialUser.user.AlarmSystems,
+    createdAt: initialUser.user.createdAt,
+    updatedAt: initialUser.user.updatedAt,
   });
 
   const updateData = (e) => {
@@ -54,7 +43,7 @@ export const EditUsrDataForm = ({ initialUser }) => {
     <LargeContainer>
       <Flex
         direction="column"
-        width="50%"
+        width="100%"
         margin="2rem"
         justifyContent="center"
         alignItems="center"

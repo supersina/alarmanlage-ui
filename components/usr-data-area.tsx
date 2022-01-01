@@ -3,6 +3,7 @@ import {
   Button,
   Flex,
   Heading,
+  Input,
   Table,
   Tbody,
   Text,
@@ -21,7 +22,6 @@ type UserDataAreaProps = {
 };
 export const UserDataArea = ({ alarmsystems }: UserDataAreaProps) => {
   console.log("UserDataArea alarmSystems: ", alarmsystems);
-  console.log("UserDataArea alarmSystems: ", !alarmsystems.alarmsystems);
 
   return (
     <LargeContainer>
@@ -39,6 +39,32 @@ export const UserDataArea = ({ alarmsystems }: UserDataAreaProps) => {
               <Text>
                 Die Alarmanlage ist {alarmsystem.isActive ? "an" : "aus"}
               </Text>
+              <Table>
+                <Thead>
+                  <Tr>
+                    <Th> Sensor</Th>
+                    <Th>Code for Open</Th>
+                    <Th>Code for Closed</Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  {alarmsystem.sensors.map((sensor) => {
+                    return (
+                      <Tr key={sensor.id}>
+                        <Th>
+                          {" "}
+                          <Input
+                            name="name"
+                            value={sensor.name ? sensor.name : ""}
+                          />
+                        </Th>
+                        <Th>{sensor.sensorCodeOpen}</Th>
+                        <Th>{sensor.sensorCodeClosed}</Th>
+                      </Tr>
+                    );
+                  })}
+                </Tbody>
+              </Table>
             </Box>
           );
         })}

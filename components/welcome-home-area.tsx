@@ -1,13 +1,20 @@
-import { Button, Flex, Heading, Text } from "@chakra-ui/react";
+import { Button, Flex, Text } from "@chakra-ui/react";
+import { Session } from "@prisma/client";
 import Link from "next/link";
-import { LargeContainer } from "./container";
 
-export const WelcomeHomeArea = ({ user }) => {
-  const { image, name, email } = user;
-  console.log("welcome home user: ", user);
+interface SessionUser {
+  user: {
+    name?: string | null | undefined;
+    email?: string | null | undefined;
+    image?: string | null | undefined;
+  } & {
+    id: string;
+  };
+}
+export const WelcomeHomeArea = ({ user }: SessionUser) => {
   return (
     <Flex direction="column" alignItems="center">
-      <Text>{name}</Text>
+      <Text>{user?.name}</Text>
       <Button width="fit-content" margin="1rem" colorScheme="yellow">
         <Link href="/settings">
           <a>Einstellungen</a>
