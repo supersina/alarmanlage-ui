@@ -1,11 +1,10 @@
 import { Box, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSession } from "next-auth/client";
-import { colors } from "../theme/colors";
+import { useSession } from "next-auth/react";
 
 export const Navbar = () => {
-  const [session] = useSession();
+  const { data: session } = useSession();
 
   return (
     <>
@@ -22,7 +21,7 @@ export const Navbar = () => {
         <Box width="40px" height="40px">
           <Link href="/">
             <a>
-              <Image src="/favicon.ico" width={50} height={50}></Image>
+              <Image src="/favicon.ico" width={50} height={50} alt=""></Image>
             </a>
           </Link>
         </Box>

@@ -1,18 +1,41 @@
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/client";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { Flex, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
-import { prismaClient } from "../prismaClient";
 // import { Alarm, User } from "@prisma/client";
 // import { AlarmTable } from "../components/alarm-table";
-import { EditForm } from "../components/form";
-import { useState } from "react";
-import { WelcomeHomeArea } from "../components/welcome-home-area";
+import { EditUsrDataForm } from "../components/edit-usr-data-form";
+import useSWR from "swr";
+import { AlarmSystem } from "@prisma/client";
+import { UserDataArea } from "../components/usr-data-area";
+import { EditAlarmsystemDataForm } from "../components/edit-alarmsystem-data-form";
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
+type UserDataAreaProps = {
+  alarmsystems: AlarmSystem[];
+};
 
 export default function Settings() {
-  const [session] = useSession();
+  const { data: session } = useSession();
+  const {
+    data: alarmsystems,
+    error: alarmError,
+    isValidating: isValidatingAlarmSystems,
+  } = useSWR<UserDataAreaProps, Error>("/api/alarmsystems", fetcher);
+
+  const {
+    data: userdata,
+    error: userError,
+    isValidating: isValidatingUser,
+  } = useSWR<UserDataAreaProps, Error>("/api/user", fetcher);
+
+  if (alarmError || userError) return <div>failed to load</div>;
+  if (isValidatingAlarmSystems || isValidatingUser)
+    return <div>loading...</div>;
+
   return (
     <>
       <Head>
@@ -77,8 +100,24 @@ export default function Settings() {
           <>
             <Flex width="100%" direction="column">
               <Heading as="h2"> Deine persönlichen Daten</Heading>
-              <EditForm initialUser={session.user}></EditForm>
+              <EditUsrDataForm initialUser={userdata}></EditUsrDataForm>
             </Flex>
+
+            {alarmsystems ? (
+              alarmsystems.alarmsystems.map((alarmsystem) => {
+                return (
+                  <EditAlarmsystemDataForm
+                    alarmsystem={alarmsystem}
+                    key={alarmsystem.id}
+                  ></EditAlarmsystemDataForm>
+                );
+              })
+            ) : (
+              <>
+                <Text>Keine Alarmsysteme vorhanden</Text>
+                <Button>Alarmsystem hinzufügen</Button>
+              </>
+            )}
           </>
         ) : (
           <></>

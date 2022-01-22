@@ -1,26 +1,32 @@
-import { Box, Button, Flex, IconButton, Input } from "@chakra-ui/react";
+import { Button, Flex, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import { LargeContainer } from "./container";
+import { User } from "@prisma/client";
 
-async function saveUser(user) {
+async function saveUser(user: User) {
   const response = await fetch("/api/user", {
     method: "PATCH",
     body: JSON.stringify(user),
   });
   if (!response.ok) {
+    alert("Fehler, Daten konnten nicht gespeichert werden!");
     throw new Error(response.statusText);
   }
-
+  alert("Daten wurden gespeichert!");
   return await response.json();
 }
 
-export const EditForm = ({ initialUser }) => {
-  const { name, email, image } = initialUser;
+export const EditUsrDataForm = ({ initialUser }) => {
   const [usr, setUsr] = useState({
-    name: name,
-    email: email,
-    newEmail: email,
-    image: image,
+    id: initialUser.user.id,
+    name: initialUser.user.name,
+    email: initialUser.user.email,
+    emailVerified: initialUser.user.emailVerified,
+    newEmail: initialUser.user.email,
+    image: initialUser.user.image,
+    AlarmSystems: initialUser.user.AlarmSystems,
+    createdAt: initialUser.user.createdAt,
+    updatedAt: initialUser.user.updatedAt,
   });
 
   const updateData = (e) => {
@@ -38,7 +44,7 @@ export const EditForm = ({ initialUser }) => {
     <LargeContainer>
       <Flex
         direction="column"
-        width="50%"
+        width="100%"
         margin="2rem"
         justifyContent="center"
         alignItems="center"
@@ -54,7 +60,9 @@ export const EditForm = ({ initialUser }) => {
           onChange={updateData}
         />
 
-        <Button onClick={saveUpdates}>Änderungen speichern</Button>
+        <Button onClick={saveUpdates} marginTop="2rem">
+          Änderungen speichern
+        </Button>
       </Flex>
     </LargeContainer>
   );
