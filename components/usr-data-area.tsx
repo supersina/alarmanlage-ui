@@ -21,8 +21,6 @@ type UserDataAreaProps = {
   };
 };
 export const UserDataArea = ({ alarmsystems }: UserDataAreaProps) => {
-  console.log("UserDataArea alarmSystems: ", alarmsystems);
-
   return (
     <LargeContainer>
       <Flex

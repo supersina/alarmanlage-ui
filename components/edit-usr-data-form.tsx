@@ -1,4 +1,4 @@
-import { Box, Button, Flex, IconButton, Input } from "@chakra-ui/react";
+import { Button, Flex, Input } from "@chakra-ui/react";
 import { useState } from "react";
 import { LargeContainer } from "./container";
 import { User } from "@prisma/client";
@@ -9,9 +9,10 @@ async function saveUser(user: User) {
     body: JSON.stringify(user),
   });
   if (!response.ok) {
+    alert("Fehler, Daten konnten nicht gespeichert werden!");
     throw new Error(response.statusText);
   }
-
+  alert("Daten wurden gespeichert!");
   return await response.json();
 }
 
@@ -59,7 +60,9 @@ export const EditUsrDataForm = ({ initialUser }) => {
           onChange={updateData}
         />
 
-        <Button onClick={saveUpdates}>Änderungen speichern</Button>
+        <Button onClick={saveUpdates} marginTop="2rem">
+          Änderungen speichern
+        </Button>
       </Flex>
     </LargeContainer>
   );
