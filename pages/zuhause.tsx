@@ -5,7 +5,6 @@ import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 import { WelcomeHomeArea } from "../components/welcome-home-area";
-import { UserDataArea } from "../components/usr-data-area";
 import useSWR from "swr";
 import { AlarmSystem, Session } from "@prisma/client";
 import { colors } from "../theme/colors";

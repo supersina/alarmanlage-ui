@@ -6,13 +6,14 @@ import {
   Switch,
   Table,
   Tbody,
+  Text,
   Th,
   Thead,
   Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { LargeContainer } from "./container";
-import { AlarmSystem, User, Sensor } from "@prisma/client";
+import { NewSensorForm } from "./new-sensor-form";
 
 async function saveAlarmSystem(alarmsystem) {
   const response = await fetch(`/api/alarmsystems/${alarmsystem.id}`, {
@@ -20,7 +21,7 @@ async function saveAlarmSystem(alarmsystem) {
     body: JSON.stringify(alarmsystem),
   });
   if (!response.ok) {
-    alert("Achtun, Fehler! Änderungen konnten nicht gespeichert werden!");
+    alert("Achtung, Fehler! Änderungen konnten nicht gespeichert werden!");
     throw new Error(response.statusText);
   }
   //todo: alert with success message
@@ -37,6 +38,8 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
     name: initialAlarmsystem.alarmsystem.name,
     sensors: initialAlarmsystem.alarmsystem.sensors,
   });
+
+  const [isEnabled, setIsEnabled] = useState(false);
 
   const updateData = (e) => {
     let valueToSet = e.target.value;
@@ -64,6 +67,7 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
       }
       return sensor;
     });
+
     setAlarmSystem({
       ...alarmSystem,
       sensors: newSensors,
@@ -74,100 +78,116 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
     saveAlarmSystem(alarmSystem);
   }
 
+  function setEnabled() {
+    setIsEnabled(!isEnabled);
+  }
+
   return (
-    <LargeContainer>
-      <Flex
-        direction="column"
-        width="100%"
-        margin="2rem"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Flex direction="row">
-          <Heading>
-            <Input
-              border="none"
-              size="lg"
-              name="name"
-              value={alarmSystem.name ? alarmSystem.name : ""}
-              placeholder="Name"
-              onChange={updateData}
-            />
-          </Heading>
+    <Flex
+      direction="column"
+      width="100%"
+      margin="2rem"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Flex direction="row">
+        <Heading>
+          <Input
+            border="none"
+            size="lg"
+            name="name"
+            value={alarmSystem.name ? alarmSystem.name : ""}
+            placeholder="Name"
+            onChange={updateData}
+          />
+        </Heading>
 
-          <Flex justify="center" align="center">
-            <Switch
-              id="status-switch"
-              name="isActive"
-              isChecked={alarmSystem.isActive}
-              onChange={updateData}
-            />
-          </Flex>
+        <Flex justify="center" align="center">
+          <Switch
+            id="status-switch"
+            name="isActive"
+            isChecked={alarmSystem.isActive}
+            onChange={updateData}
+          />
         </Flex>
-
-        {alarmSystem.sensors ? (
-          <Table>
-            <Thead>
-              <Tr>
-                <Th> Sensor</Th>
-                <Th>Code for Open</Th>
-                <Th>Code for Closed</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {alarmSystem.sensors.map((sensor) => {
-                return (
-                  <Tr key={sensor.id}>
-                    <Th>
-                      <Input
-                        name={`sensorName-${sensor.id}`}
-                        value={sensor.name}
-                        placeholder="Name"
-                        onChange={(e) =>
-                          updateSensor(sensor.id, "name", e.target.value)
-                        }
-                      />
-                    </Th>
-                    <Th>
-                      <Input
-                        name={`codeOpen-${sensor.id}`}
-                        value={sensor.sensorCodeOpen}
-                        placeholder="Code Open"
-                        onChange={(e) =>
-                          updateSensor(
-                            sensor.id,
-                            "sensorCodeOpen",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </Th>
-                    <Th>
-                      <Input
-                        name={`codeClosed-${sensor.id}`}
-                        value={sensor.sensorCodeClosed}
-                        onChange={(e) =>
-                          updateSensor(
-                            sensor.id,
-                            "sensorCodeClosed",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </Th>
-                  </Tr>
-                );
-              })}
-            </Tbody>
-          </Table>
-        ) : (
-          <>Keine Sensoren</>
-        )}
-
-        <Button onClick={saveUpdates} marginTop="2rem">
-          Änderungen speichern
-        </Button>
       </Flex>
-    </LargeContainer>
+
+      {alarmSystem.sensors.length !== 0 ? (
+        <>
+          <>
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th> Sensor</Th>
+                  <Th>Code for Open</Th>
+                  <Th>Code for Closed</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {alarmSystem.sensors.map((sensor) => {
+                  return (
+                    <Tr key={sensor.id}>
+                      <Th>
+                        <Input
+                          name={`sensorName-${sensor.id}`}
+                          value={sensor.name}
+                          placeholder="Name"
+                          onChange={(e) =>
+                            updateSensor(sensor.id, "name", e.target.value)
+                          }
+                        />
+                      </Th>
+                      <Th>
+                        <Input
+                          name={`codeOpen-${sensor.id}`}
+                          value={sensor.sensorCodeOpen}
+                          placeholder="Code Open"
+                          onChange={(e) =>
+                            updateSensor(
+                              sensor.id,
+                              "sensorCodeOpen",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </Th>
+                      <Th>
+                        <Input
+                          name={`codeClosed-${sensor.id}`}
+                          value={sensor.sensorCodeClosed}
+                          onChange={(e) =>
+                            updateSensor(
+                              sensor.id,
+                              "sensorCodeClosed",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </Th>
+                    </Tr>
+                  );
+                })}
+              </Tbody>
+            </Table>
+            <Button onClick={saveUpdates} marginTop="2rem">
+              Änderungen speichern
+            </Button>
+          </>
+        </>
+      ) : (
+        <>
+          <Text>Keine Sensoren registriert</Text>
+        </>
+      )}
+
+      <Button onClick={setEnabled} margin="2rem">
+        Neuen Sensor anlegen
+      </Button>
+      {isEnabled ? (
+        <NewSensorForm alarmSystemId={alarmSystem.id}></NewSensorForm>
+      ) : (
+        <></>
+      )}
+    </Flex>
   );
 };

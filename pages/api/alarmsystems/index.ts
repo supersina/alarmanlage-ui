@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
+import { EditAlarmsystemDataForm } from "../../../components/edit-alarmsystem-data-form";
 import { prismaClient } from "../../../prismaClient";
 
 //POST, GET
@@ -13,7 +14,11 @@ const alarmSystemHandler = async (
   if (req.method !== "GET" && req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }
+  if (!session) {
+    return res.status(403).json({ message: "Forbidden" });
+  }
 
+  //GET
   if (req.method == "GET") {
     const alarmsystems = await prismaClient.alarmSystem.findMany({
       where: { userId: session?.user.id },
@@ -41,6 +46,34 @@ const alarmSystemHandler = async (
     });
 
     res.json({ alarmsystems });
+  }
+
+  //POST
+  if (req.method == "POST") {
+    const alarmSystemData = JSON.parse(req.body);
+
+    const usr = await prismaClient.user.findUnique({
+      where: {
+        id: session.user.id,
+      },
+    });
+
+    console.log("User: ", usr);
+
+    if (!usr) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    } else {
+      const alarmsystem = await prismaClient.alarmSystem.create({
+        data: {
+          userId: session.user.id,
+          name: alarmSystemData.name,
+          isActive: alarmSystemData.isActive,
+        },
+      });
+      res.json({ alarmsystem });
+    }
   }
 };
 
