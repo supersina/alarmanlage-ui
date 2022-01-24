@@ -12,7 +12,6 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { LargeContainer } from "./container";
 import { NewSensorForm } from "./new-sensor-form";
 
 async function saveAlarmSystem(alarmsystem) {
@@ -31,6 +30,25 @@ async function saveAlarmSystem(alarmsystem) {
   }
 }
 
+async function deleteSensor(sensorId, alarmsystemId) {
+  const response = await fetch(
+    `/api/alarmsystems/${alarmsystemId}/${sensorId}`,
+    {
+      method: "DELETE",
+      body: JSON.stringify(sensorId),
+    }
+  );
+  if (!response.ok) {
+    alert("Achtung, Fehler! Sensor konnte nicht gelöscht werden.");
+    throw new Error(response.statusText);
+  }
+  //todo: alert with success message
+  else {
+    alert("Sensor wurde erfolgreich gelöscht!");
+    return response;
+  }
+}
+
 export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
   const [alarmSystem, setAlarmSystem] = useState({
     id: initialAlarmsystem.alarmsystem.id,
@@ -43,12 +61,9 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
 
   const updateData = (e) => {
     let valueToSet = e.target.value;
-    console.log(valueToSet);
     if (e.target.name === "isActive") {
-      console.log("target name isActive", e.target.name);
       valueToSet = e.target.checked;
     }
-    console.log("new value to set ", valueToSet);
 
     setAlarmSystem({
       ...alarmSystem,
@@ -73,10 +88,6 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
       sensors: newSensors,
     });
   };
-
-  function saveUpdates() {
-    saveAlarmSystem(alarmSystem);
-  }
 
   function setEnabled() {
     setIsEnabled(!isEnabled);
@@ -164,12 +175,24 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
                           }
                         />
                       </Th>
+                      <Th>
+                        <Button
+                          onClick={() =>
+                            deleteSensor(sensor.id, alarmSystem.id)
+                          }
+                        >
+                          Löschen
+                        </Button>
+                      </Th>
                     </Tr>
                   );
                 })}
               </Tbody>
             </Table>
-            <Button onClick={saveUpdates} marginTop="2rem">
+            <Button
+              onClick={() => saveAlarmSystem(alarmSystem)}
+              marginTop="2rem"
+            >
               Änderungen speichern
             </Button>
           </>

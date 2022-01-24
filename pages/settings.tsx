@@ -68,6 +68,7 @@ export default function Settings() {
 
   function saveUpdatesNewAlarmSystem() {
     saveNewAlarmSystem(newAlarmSystem);
+    setNewAlarmSystem({ ...newAlarmSystem, name: "" });
   }
 
   return (

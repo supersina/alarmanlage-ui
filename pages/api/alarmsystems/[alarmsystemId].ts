@@ -44,7 +44,7 @@ const alarmSystemHandler = async (
 
   if (req.method == "PATCH") {
     const alarmSystemData = JSON.parse(req.body);
-    console.log("Sensoren:", alarmSystemData.sensors);
+
     const updatedAlarmSystem = await prismaClient.alarmSystem.updateMany({
       where: { userId: session?.user.id, id: alarmSystemData.id },
 
@@ -56,7 +56,6 @@ const alarmSystemHandler = async (
 
     //check alarm systems of session user
     const { alarmsystemId } = req.query;
-    console.log("Alarm Id: ", alarmsystemId);
 
     if (typeof alarmsystemId !== "string") {
       return res.status(405).json({
@@ -67,8 +66,6 @@ const alarmSystemHandler = async (
     const sessionAlarmSystem = await prismaClient.alarmSystem.findMany({
       where: { userId: session?.user.id, id: alarmsystemId },
     });
-
-    console.log("Session users alarm system: ", sessionAlarmSystem[0]);
 
     alarmSystemData.sensors.map(async (sensor) => {
       const sens = await prismaClient.sensor.updateMany({

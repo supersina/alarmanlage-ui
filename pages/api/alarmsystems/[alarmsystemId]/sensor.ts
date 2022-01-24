@@ -7,7 +7,7 @@ import { prismaClient } from "../../../../prismaClient";
 const sensorHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getSession({ req });
   const sensor = JSON.parse(req.body);
-  console.log(sensor.alarmSystemId);
+
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method not allowed" });
   }

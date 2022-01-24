@@ -12,10 +12,8 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { LargeContainer } from "./container";
 
 async function saveSensor(sensor) {
-  console.log("Sensor to save: ", sensor);
   const response = await fetch(
     `/api/alarmsystems/${sensor.alarmSystemId}/sensor`,
     {
