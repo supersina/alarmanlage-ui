@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
-import { EditAlarmsystemDataForm } from "../../../components/edit-alarmsystem-data-form";
 import { prismaClient } from "../../../prismaClient";
 
-//POST, GET
+//GET, POST
 
 const alarmSystemHandler = async (
   req: NextApiRequest,
@@ -18,7 +17,7 @@ const alarmSystemHandler = async (
     return res.status(403).json({ message: "Forbidden" });
   }
 
-  //GET
+  //GET ALARM SYSTEMS
   if (req.method == "GET") {
     const alarmsystems = await prismaClient.alarmSystem.findMany({
       where: { userId: session?.user.id },
@@ -48,7 +47,7 @@ const alarmSystemHandler = async (
     res.json({ alarmsystems });
   }
 
-  //POST
+  //CREATE ALARM SYSTEM
   if (req.method == "POST") {
     const alarmSystemData = JSON.parse(req.body);
 

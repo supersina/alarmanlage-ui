@@ -41,10 +41,24 @@ async function deleteSensor(sensorId, alarmsystemId) {
   if (!response.ok) {
     alert("Achtung, Fehler! Sensor konnte nicht gelöscht werden.");
     throw new Error(response.statusText);
-  }
-  //todo: alert with success message
-  else {
+  } else {
     alert("Sensor wurde erfolgreich gelöscht!");
+    return response;
+  }
+}
+
+async function deleteAlarmSystem(alarmsystem) {
+  const alarmsystemId = alarmsystem.id;
+  console.log("aufruf id: ", alarmsystemId);
+  const response = await fetch(`/api/alarmsystems/${alarmsystemId}}`, {
+    method: "DELETE",
+    body: JSON.stringify(alarmsystem),
+  });
+  if (!response.ok) {
+    alert("Achtung, Fehler! Alarmanlage konnte nicht gelöscht werden.");
+    throw new Error(response.statusText);
+  } else {
+    alert("Alarmanlage wurde erfolgreich gelöscht!");
     return response;
   }
 }
@@ -100,6 +114,7 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
       margin="2rem"
       justifyContent="center"
       alignItems="center"
+      background="black"
     >
       <Flex direction="row">
         <Heading>
@@ -120,6 +135,9 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
             isChecked={alarmSystem.isActive}
             onChange={updateData}
           />
+          <Button onClick={() => deleteAlarmSystem(alarmSystem)} margin="2rem">
+            Löschen
+          </Button>
         </Flex>
       </Flex>
 
@@ -132,6 +150,7 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
                   <Th> Sensor</Th>
                   <Th>Code for Open</Th>
                   <Th>Code for Closed</Th>
+                  <Th></Th>
                 </Tr>
               </Thead>
               <Tbody>

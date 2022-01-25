@@ -4,14 +4,12 @@ import { Flex, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
-// import { Alarm, User } from "@prisma/client";
-// import { AlarmTable } from "../components/alarm-table";
 import { EditUsrDataForm } from "../components/edit-usr-data-form";
 import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
 import { EditAlarmsystemDataForm } from "../components/edit-alarmsystem-data-form";
 import { useState } from "react";
-import { Input, Switch } from "@chakra-ui/react";
+import { Input } from "@chakra-ui/react";
 
 async function saveNewAlarmSystem(alarmsystem) {
   const response = await fetch("/api/alarmsystems/", {
@@ -152,6 +150,7 @@ export default function Settings() {
               </Flex>
             </Flex>
           </LargeContainer>
+
           <LargeContainer>
             <Flex
               direction="column"
@@ -182,6 +181,7 @@ export default function Settings() {
               </Flex>
             </Flex>
           </LargeContainer>
+
           <LargeContainer>
             <Flex
               direction="column"
