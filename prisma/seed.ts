@@ -1,5 +1,5 @@
 import { prismaClient } from "../prismaClient";
-import { Prisma, AlarmSystem, User, Sensor, SensorEvent } from "@prisma/client";
+import { AlarmSystem, User, Sensor, SensorEvent } from "@prisma/client";
 
 async function seed() {
   const users = await Promise.all(

@@ -1,6 +1,5 @@
 import { Button, Flex, Input } from "@chakra-ui/react";
 import { useState } from "react";
-import { LargeContainer } from "./container";
 import { User } from "@prisma/client";
 
 async function saveUser(user: User) {
@@ -41,29 +40,30 @@ export const EditUsrDataForm = ({ initialUser }) => {
   }
 
   return (
-    <LargeContainer>
+    <>
       <Flex
         direction="column"
         width="100%"
-        margin="2rem"
         justifyContent="center"
         alignItems="center"
       >
         <Input
+          size="lg"
           name="name"
           value={usr.name ? usr.name : ""}
           onChange={updateData}
         />
         <Input
+          size="lg"
           name="newEmail"
           value={usr.newEmail ? usr.newEmail : ""}
           onChange={updateData}
         />
 
-        <Button onClick={saveUpdates} marginTop="2rem">
+        <Button onClick={saveUpdates} margin="2rem">
           Änderungen speichern
         </Button>
       </Flex>
-    </LargeContainer>
+    </>
   );
 };

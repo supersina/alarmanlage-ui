@@ -4,14 +4,28 @@ import { Flex, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
-// import { Alarm, User } from "@prisma/client";
-// import { AlarmTable } from "../components/alarm-table";
 import { EditUsrDataForm } from "../components/edit-usr-data-form";
 import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
-import { UserDataArea } from "../components/usr-data-area";
 import { EditAlarmsystemDataForm } from "../components/edit-alarmsystem-data-form";
+import { useState } from "react";
+import { Input } from "@chakra-ui/react";
 
+async function saveNewAlarmSystem(alarmsystem) {
+  const response = await fetch("/api/alarmsystems/", {
+    method: "POST",
+    body: JSON.stringify(alarmsystem),
+  });
+  if (!response.ok) {
+    alert("Achtung, Fehler! Änderungen konnten nicht gespeichert werden!");
+    throw new Error(response.statusText);
+  }
+  //todo: alert with success message
+  else {
+    alert("Änderungen wurden gespeichert!");
+    return response;
+  }
+}
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 type UserDataAreaProps = {
@@ -19,6 +33,11 @@ type UserDataAreaProps = {
 };
 
 export default function Settings() {
+  const [newAlarmSystem, setNewAlarmSystem] = useState({
+    isActive: false,
+    name: "",
+  });
+
   const { data: session } = useSession();
   const {
     data: alarmsystems,
@@ -35,6 +54,20 @@ export default function Settings() {
   if (alarmError || userError) return <div>failed to load</div>;
   if (isValidatingAlarmSystems || isValidatingUser)
     return <div>loading...</div>;
+
+  const updateNewData = (e) => {
+    let valueToSet = e.target.value;
+
+    setNewAlarmSystem({
+      ...newAlarmSystem,
+      [e.target.name]: valueToSet,
+    });
+  };
+
+  function saveUpdatesNewAlarmSystem() {
+    saveNewAlarmSystem(newAlarmSystem);
+    setNewAlarmSystem({ ...newAlarmSystem, name: "" });
+  }
 
   return (
     <>
@@ -95,34 +128,94 @@ export default function Settings() {
           </>
         )}
       </Hero>
-      <LargeContainer>
-        {session ? (
-          <>
-            <Flex width="100%" direction="column">
-              <Heading as="h2"> Deine persönlichen Daten</Heading>
-              <EditUsrDataForm initialUser={userdata}></EditUsrDataForm>
-            </Flex>
 
-            {alarmsystems ? (
-              alarmsystems.alarmsystems.map((alarmsystem) => {
-                return (
-                  <EditAlarmsystemDataForm
-                    alarmsystem={alarmsystem}
-                    key={alarmsystem.id}
-                  ></EditAlarmsystemDataForm>
-                );
-              })
-            ) : (
-              <>
-                <Text>Keine Alarmsysteme vorhanden</Text>
-                <Button>Alarmsystem hinzufügen</Button>
-              </>
-            )}
-          </>
-        ) : (
-          <></>
-        )}
-      </LargeContainer>
+      {session ? (
+        <>
+          <LargeContainer>
+            <Flex
+              direction="column"
+              width="100%"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Flex
+                width={{ base: "90%", sm: "90%", md: "50%", lg: "50%" }}
+                direction="column"
+                margin="2rem"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Heading as="h2"> Deine persönlichen Daten</Heading>
+                <EditUsrDataForm initialUser={userdata}></EditUsrDataForm>
+              </Flex>
+            </Flex>
+          </LargeContainer>
+
+          <LargeContainer>
+            <Flex
+              direction="column"
+              width="100%"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Flex
+                direction="column"
+                width={{ base: "90%", sm: "90%", md: "50%", lg: "50%" }}
+                margin="2rem"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Heading as="h2"> Neues Alarmsystem anlegen</Heading>
+
+                <Input
+                  size="lg"
+                  name="name"
+                  value={newAlarmSystem.name ? newAlarmSystem.name : ""}
+                  placeholder="Name"
+                  onChange={updateNewData}
+                />
+
+                <Button onClick={saveUpdatesNewAlarmSystem} margin="2rem">
+                  Änderungen speichern
+                </Button>
+              </Flex>
+            </Flex>
+          </LargeContainer>
+
+          <LargeContainer>
+            <Flex
+              direction="column"
+              width="100%"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Flex
+                direction="column"
+                margin="2rem"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Heading as="h2"> Deine Alarmsysteme</Heading>
+
+                {alarmsystems ? (
+                  alarmsystems.alarmsystems.map((alarmsystem) => {
+                    return (
+                      <EditAlarmsystemDataForm
+                        key={alarmsystem.id}
+                        alarmsystem={alarmsystem}
+                      ></EditAlarmsystemDataForm>
+                    );
+                  })
+                ) : (
+                  <Text>Keine Alarmsysteme vorhanden</Text>
+                )}
+              </Flex>
+            </Flex>
+          </LargeContainer>
+        </>
+      ) : (
+        <></>
+      )}
     </>
   );
 }

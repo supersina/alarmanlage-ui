@@ -8,6 +8,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 model Account {
@@ -78,7 +79,7 @@ model AlarmSystem {
 
 model Sensor {
   id               String        @id @default(uuid())
-  alarmSystem      AlarmSystem   @relation(fields: [alarmSystemId], references: [id])
+  alarmSystem      AlarmSystem   @relation(fields: [alarmSystemId], references: [id], onDelete: Cascade)
   alarmSystemId    String
   name             String
   sensorCodeOpen   String
@@ -91,7 +92,7 @@ model Sensor {
 model SensorEvent {
   id         String   @id @default(uuid())
   sensorId   String
-  sensor     Sensor   @relation(fields: [sensorId], references: [id])
+  sensor     Sensor   @relation(fields: [sensorId], references: [id], onDelete: Cascade)
   sensorCode String
   createdAt  DateTime @default(now()) @map(name: "created_at")
   updatedAt  DateTime @default(now()) @map(name: "updated_at")
