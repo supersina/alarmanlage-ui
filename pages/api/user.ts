@@ -12,8 +12,15 @@ const userHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method == "GET") {
     const user = await prismaClient.user.findUnique({
       where: { id: session?.user.id },
-      select: { name: true, email: true, image: true },
+      include: {
+        alarmSystems: {
+          include: {
+            sensors: { include: { sensorEvents: true } },
+          },
+        },
+      },
     });
+    console.log("User Data: ", user);
     res.json({ user });
   }
 

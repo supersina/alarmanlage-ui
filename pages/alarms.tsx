@@ -6,27 +6,28 @@ import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 import { WelcomeHomeArea } from "../components/welcome-home-area";
 import useSWR from "swr";
-import { AlarmSystem, Session } from "@prisma/client";
+import { User } from "@prisma/client";
 import { colors } from "../theme/colors";
 
-type UserDataAreaProps = {
-  alarmsystems: AlarmSystem[];
+type UserProps = {
+  userdata: User[];
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function Zuhause() {
+export default function Alarms() {
   const { data: session } = useSession();
 
   const {
-    data: alarmsystems,
+    data: userdata,
     error,
     isValidating,
-  } = useSWR<UserDataAreaProps, Error>("/api/alarmsystems", fetcher);
+  } = useSWR<UserProps, Error>("/api/user", fetcher);
 
   if (error) return <div>failed to load</div>;
   if (isValidating) return <div>loading...</div>;
 
+  console.log("Userdata", userdata);
   return (
     <>
       <Head>
@@ -106,7 +107,7 @@ export default function Zuhause() {
       <LargeContainer>
         {session ? (
           <>
-            {alarmsystems ? (
+            {userdata ? (
               <Text>Hier erscheinen bald die Alarme deines Alarmsystems</Text>
             ) : (
               // <UserDataArea alarmsystems={alarmsystems}></UserDataArea>
@@ -123,21 +124,3 @@ export default function Zuhause() {
     </>
   );
 }
-
-// import { GetServerSideProps } from "next";
-// import { useEffect } from "react";
-
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   // Fetch data from API
-//   const url = new URL("api/alarmsystems", process.env.API_URL);
-//   const response = await fetch(url.href, {
-//     method: "GET",
-//     credentials: "include",
-//   });
-//   if (!response.ok) {
-//     throw new Error(response.statusText);
-//   }
-//   const data = await response.json();
-//   // Pass data to the page via props
-//   return { props: { data, session: await getSession(context) } };
-// };
