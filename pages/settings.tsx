@@ -11,21 +11,6 @@ import { EditAlarmsystemDataForm } from "../components/edit-alarmsystem-data-for
 import { useState } from "react";
 import { Input } from "@chakra-ui/react";
 
-async function saveNewAlarmSystem(alarmsystem) {
-  const response = await fetch("/api/alarmsystems/", {
-    method: "POST",
-    body: JSON.stringify(alarmsystem),
-  });
-  if (!response.ok) {
-    alert("Achtung, Fehler! Änderungen konnten nicht gespeichert werden!");
-    throw new Error(response.statusText);
-  }
-  //todo: alert with success message
-  else {
-    alert("Änderungen wurden gespeichert!");
-    return response;
-  }
-}
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 type UserDataAreaProps = {
@@ -33,17 +18,7 @@ type UserDataAreaProps = {
 };
 
 export default function Settings() {
-  const [newAlarmSystem, setNewAlarmSystem] = useState({
-    isActive: false,
-    name: "",
-  });
-
   const { data: session } = useSession();
-  const {
-    data: alarmsystems,
-    error: alarmError,
-    isValidating: isValidatingAlarmSystems,
-  } = useSWR<UserDataAreaProps, Error>("/api/alarmsystems", fetcher);
 
   const {
     data: userdata,
@@ -51,23 +26,8 @@ export default function Settings() {
     isValidating: isValidatingUser,
   } = useSWR<UserDataAreaProps, Error>("/api/user", fetcher);
 
-  if (alarmError || userError) return <div>failed to load</div>;
-  if (isValidatingAlarmSystems || isValidatingUser)
-    return <div>loading...</div>;
-
-  const updateNewData = (e) => {
-    let valueToSet = e.target.value;
-
-    setNewAlarmSystem({
-      ...newAlarmSystem,
-      [e.target.name]: valueToSet,
-    });
-  };
-
-  function saveUpdatesNewAlarmSystem() {
-    saveNewAlarmSystem(newAlarmSystem);
-    setNewAlarmSystem({ ...newAlarmSystem, name: "" });
-  }
+  if (userError) return <div>failed to load</div>;
+  if (isValidatingUser) return <div>loading...</div>;
 
   return (
     <>
@@ -100,10 +60,7 @@ export default function Settings() {
                 <Heading as="h1" variant="large">
                   Einstellungen
                 </Heading>
-                <Text>
-                  Nimm Änderungen an deinen persönlichen Daten vor und bearbeite
-                  dein Alarmsystem.
-                </Text>
+                <Text>Nimm Änderungen an deinen persönlichen Daten vor.</Text>
               </Flex>
             </LargeContainer>
           </>
@@ -147,68 +104,6 @@ export default function Settings() {
               >
                 <Heading as="h2"> Deine persönlichen Daten</Heading>
                 <EditUsrDataForm initialUser={userdata}></EditUsrDataForm>
-              </Flex>
-            </Flex>
-          </LargeContainer>
-
-          <LargeContainer>
-            <Flex
-              direction="column"
-              width="100%"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Flex
-                direction="column"
-                width={{ base: "90%", sm: "90%", md: "50%", lg: "50%" }}
-                margin="2rem"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Heading as="h2"> Neues Alarmsystem anlegen</Heading>
-
-                <Input
-                  size="lg"
-                  name="name"
-                  value={newAlarmSystem.name ? newAlarmSystem.name : ""}
-                  placeholder="Name"
-                  onChange={updateNewData}
-                />
-
-                <Button onClick={saveUpdatesNewAlarmSystem} margin="2rem">
-                  Änderungen speichern
-                </Button>
-              </Flex>
-            </Flex>
-          </LargeContainer>
-
-          <LargeContainer>
-            <Flex
-              direction="column"
-              width="100%"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Flex
-                direction="column"
-                margin="2rem"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Heading as="h2"> Deine Alarmsysteme</Heading>
-
-                {alarmsystems ? (
-                  alarmsystems.alarmsystems.map((alarmsystem) => {
-                    return (
-                      <EditAlarmsystemDataForm
-                        key={alarmsystem.id}
-                        alarmsystem={alarmsystem}
-                      ></EditAlarmsystemDataForm>
-                    );
-                  })
-                ) : (
-                  <Text>Keine Alarmsysteme vorhanden</Text>
-                )}
               </Flex>
             </Flex>
           </LargeContainer>

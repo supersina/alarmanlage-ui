@@ -36,9 +36,14 @@ export const Navbar = () => {
             <a>Start</a>
           </Link>
           {session ? (
-            <Link href="/alarms">
-              <a>Alarme</a>
-            </Link>
+            <>
+              <Link href="/alarms">
+                <a>Alarme</a>
+              </Link>
+              <Link href="/alarmsystems">
+                <a>Alarmsysteme</a>
+              </Link>
+            </>
           ) : (
             <></>
           )}
