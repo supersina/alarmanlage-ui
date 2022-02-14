@@ -4,30 +4,46 @@ import { Flex, Heading, Text } from "@chakra-ui/layout";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
-import { WelcomeHomeArea } from "../components/welcome-home-area";
 import useSWR from "swr";
-import { User } from "@prisma/client";
+import { AlarmSystem } from "@prisma/client";
 import { colors } from "../theme/colors";
+import { useState } from "react";
+import {
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  HStack,
+  Radio,
+  RadioGroup,
+  Select,
+} from "@chakra-ui/react";
+import { SensorEventTable } from "../components/sensorevent-table";
 
-type UserProps = {
-  userdata: User[];
+type AlarmSystemProps = {
+  alarmsystems: AlarmSystem[];
 };
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Alarms() {
   const { data: session } = useSession();
-
   const {
-    data: userdata,
+    data: alarmsystemData,
     error,
     isValidating,
-  } = useSWR<UserProps, Error>("/api/user", fetcher);
+  } = useSWR<AlarmSystemProps, Error>("/api/alarmsystems/", fetcher);
+
+  const [alarmsystemId, setAlarmsystemId] = useState("");
+
+  const handleChange = (e) => {
+    console.log("Event", e);
+    setAlarmsystemId(e);
+    console.log("alarm system: ", alarmsystemId);
+  };
 
   if (error) return <div>failed to load</div>;
   if (isValidating) return <div>loading...</div>;
 
-  console.log("Userdata", userdata);
   return (
     <>
       <Head>
@@ -36,7 +52,7 @@ export default function Alarms() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <Hero src={"/307-1600x500.jpg"}>
+      <Hero src={"/index1600x500.jpg"}>
         {session ? (
           <>
             <Flex width="100%" justifyContent="flex-end">
@@ -56,64 +72,60 @@ export default function Alarms() {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Heading
-                  as="h1"
-                  backgroundColor={colors.mainColor}
-                  variant="large"
-                >
-                  Willkommen in Deinem sicheren Zuhause!
+                <Heading as="h1" variant="large">
+                  Deine Alarme
                 </Heading>
-                <Text>
-                  Überprüfe Dein Alarmsystem, nimm Änderungen vor und sieh Dir
-                  Deine Alarmhistorie an.
-                </Text>
-              </Flex>
-            </LargeContainer>
-            <LargeContainer>
-              <Flex width="100%" justifyContent="center">
-                <Flex
-                  direction="column"
-                  alignItems="center"
-                  justifyContent="center"
-                  margin="1rem"
-                  width="fit-content"
-                >
-                  <WelcomeHomeArea user={session.user}></WelcomeHomeArea>
-                </Flex>
               </Flex>
             </LargeContainer>
           </>
         ) : (
           <LargeContainer>
             <Text>Bitte Logge dich ein, um Deine private Seite zu sehen!</Text>
+            <Button
+              marginTop="2rem"
+              colorScheme="yellow"
+              onClick={() => signIn()}
+            >
+              Sign in
+            </Button>
           </LargeContainer>
-        )}
-        {session ? (
-          <></>
-        ) : (
-          <>
-            <LargeContainer>
-              <Button
-                marginTop="2rem"
-                colorScheme="yellow"
-                onClick={() => signIn()}
-              >
-                Sign in
-              </Button>
-            </LargeContainer>
-          </>
         )}
       </Hero>
       <LargeContainer>
         {session ? (
           <>
-            {userdata ? (
-              <Text>Hier erscheinen bald die Alarme deines Alarmsystems</Text>
+            {alarmsystemData ? (
+              <>
+                <FormControl as="fieldset">
+                  <FormLabel as="legend">Alarmsysteme</FormLabel>
+                  <RadioGroup value={alarmsystemId} onChange={handleChange}>
+                    <HStack spacing="24px">
+                      {alarmsystemData.alarmsystems.map((alarmsystem) => {
+                        return (
+                          <Radio key={alarmsystem.id} value={alarmsystem.id}>
+                            {alarmsystem.name}
+                          </Radio>
+                        );
+                      })}
+                    </HStack>
+                  </RadioGroup>
+                  <FormHelperText>
+                    Wähle ein Alarmsystem aus, um die Sensor Events zu
+                    betrachten.
+                  </FormHelperText>
+                </FormControl>
+                {alarmsystemId ? (
+                  <SensorEventTable
+                    alarmsystemData={alarmsystemData}
+                    alarmsystemId={alarmsystemId}
+                  ></SensorEventTable>
+                ) : (
+                  <> </>
+                )}
+              </>
             ) : (
-              // <UserDataArea alarmsystems={alarmsystems}></UserDataArea>
               <>
                 <Text>Keine Alarmsysteme vorhanden</Text>
-                <Button>Alarmsystem hinzufügen</Button>
               </>
             )}
           </>

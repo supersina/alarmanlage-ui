@@ -37,6 +37,7 @@ const alarmSystemHandler = async (
                 id: true,
                 sensorId: true,
                 sensorCode: true,
+                createdAt: true,
               },
             },
           },
