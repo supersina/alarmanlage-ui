@@ -8,6 +8,7 @@ import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
 import { EditAlarmsystemDataForm } from "../../components/edit-alarmsystem-data-form";
 import { useRouter } from "next/router";
+import { Footer } from "../../components/footer";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -35,50 +36,23 @@ export default function Alarmsystem() {
 
       <Hero src={"/about1600x500.jpg"}>
         {session ? (
-          <>
-            <Flex width="100%" justifyContent="flex-end">
-              <Button
-                width="fit-content"
-                margin="2rem"
-                colorScheme="yellow"
-                onClick={() => signOut()}
-              >
-                Sign out
-              </Button>
+          <LargeContainer>
+            <Flex
+              direction="column"
+              width="100%"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Heading as="h1" variant="large">
+                Dein Alarmsystem
+              </Heading>
+              <Text>Das ist Dein Alarmsystem.</Text>
             </Flex>
-            {/* <LargeContainer>
-              <Flex
-                direction="column"
-                width="100%"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Heading as="h1" variant="large">
-                  Alarmanlage
-                </Heading>
-                <Text>Nimm Änderungen an deiner Alarmanlage vor.</Text>
-              </Flex>
-            </LargeContainer> */}
-          </>
+          </LargeContainer>
         ) : (
           <LargeContainer>
             <Text>Bitte Logge dich ein, um Deine private Seite zu sehen!</Text>
           </LargeContainer>
-        )}
-        {session ? (
-          <></>
-        ) : (
-          <>
-            <LargeContainer>
-              <Button
-                marginTop="2rem"
-                colorScheme="yellow"
-                onClick={() => signIn()}
-              >
-                Sign in
-              </Button>
-            </LargeContainer>
-          </>
         )}
       </Hero>
 
@@ -91,28 +65,20 @@ export default function Alarmsystem() {
               justifyContent="center"
               alignItems="center"
             >
-              <Flex
-                direction="column"
-                margin="2rem"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Heading as="h2"> Dein Alarmsystem</Heading>
-
-                {alarmsystem ? (
-                  <EditAlarmsystemDataForm
-                    alarmsystem={alarmsystem}
-                  ></EditAlarmsystemDataForm>
-                ) : (
-                  <Text>Keine Alarmsysteme vorhanden</Text>
-                )}
-              </Flex>
+              {alarmsystem ? (
+                <EditAlarmsystemDataForm
+                  alarmsystem={alarmsystem}
+                ></EditAlarmsystemDataForm>
+              ) : (
+                <Text>Keine Alarmsysteme vorhanden</Text>
+              )}
             </Flex>
           </LargeContainer>
         </>
       ) : (
         <></>
       )}
+      <Footer />
     </>
   );
 }

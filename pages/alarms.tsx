@@ -18,6 +18,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { SensorEventTable } from "../components/sensorevent-table";
+import { Footer } from "../components/footer";
 
 type AlarmSystemProps = {
   alarmsystems: AlarmSystem[];
@@ -54,40 +55,22 @@ export default function Alarms() {
 
       <Hero src={"/index1600x500.jpg"}>
         {session ? (
-          <>
-            <Flex width="100%" justifyContent="flex-end">
-              <Button
-                width="fit-content"
-                margin="2rem"
-                colorScheme="yellow"
-                onClick={() => signOut()}
-              >
-                Sign out
-              </Button>
+          <LargeContainer>
+            <Flex
+              direction="column"
+              width="100%"
+              justifyContent="center"
+              alignItems="center"
+            >
+              <Heading as="h1" variant="large">
+                Alarme
+              </Heading>
+              <Text>Das sind Deine Alarme.</Text>
             </Flex>
-            <LargeContainer>
-              <Flex
-                direction="column"
-                width="100%"
-                justifyContent="center"
-                alignItems="center"
-              >
-                <Heading as="h1" variant="large">
-                  Deine Alarme
-                </Heading>
-              </Flex>
-            </LargeContainer>
-          </>
+          </LargeContainer>
         ) : (
           <LargeContainer>
             <Text>Bitte Logge dich ein, um Deine private Seite zu sehen!</Text>
-            <Button
-              marginTop="2rem"
-              colorScheme="yellow"
-              onClick={() => signIn()}
-            >
-              Sign in
-            </Button>
           </LargeContainer>
         )}
       </Hero>
@@ -110,10 +93,11 @@ export default function Alarms() {
                     </HStack>
                   </RadioGroup>
                   <FormHelperText>
-                    Wähle ein Alarmsystem aus, um die Sensor Events zu
+                    Wähle ein Alarmsystem aus, um dazugehörige Ereignisse zu
                     betrachten.
                   </FormHelperText>
                 </FormControl>
+
                 {alarmsystemId ? (
                   <SensorEventTable
                     alarmsystemData={alarmsystemData}
@@ -133,6 +117,7 @@ export default function Alarms() {
           <></>
         )}
       </LargeContainer>
+      <Footer />
     </>
   );
 }

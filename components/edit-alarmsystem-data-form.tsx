@@ -1,7 +1,6 @@
 import {
   Button,
   Flex,
-  Heading,
   Input,
   Switch,
   Table,
@@ -120,7 +119,7 @@ export const EditAlarmsystemDataForm = ({ alarmsystem }) => {
         Alarmsystem löschen
       </Button>
       <Flex direction="row" margin="2rem" alignItems="center">
-        <Text marginRight="1rem">Name:</Text>
+        <Text marginRight="1rem">Name</Text>
         <Input
           size="lg"
           marginRight="1rem"

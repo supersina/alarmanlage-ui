@@ -8,6 +8,7 @@ import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
 import { useState } from "react";
 import Link from "next/link";
+import { Footer } from "../../components/footer";
 
 async function saveNewAlarmSystem(alarmsystem) {
   const response = await fetch("/api/alarmsystems/", {
@@ -71,16 +72,6 @@ export default function Alarmsystems() {
       <Hero src={"/about1600x500.jpg"}>
         {session ? (
           <>
-            <Flex width="100%" justifyContent="flex-end">
-              <Button
-                width="fit-content"
-                margin="2rem"
-                colorScheme="yellow"
-                onClick={() => signOut()}
-              >
-                Sign out
-              </Button>
-            </Flex>
             <LargeContainer>
               <Flex
                 direction="column"
@@ -100,21 +91,6 @@ export default function Alarmsystems() {
             <Text>Bitte Logge dich ein, um Deine private Seite zu sehen!</Text>
           </LargeContainer>
         )}
-        {session ? (
-          <></>
-        ) : (
-          <>
-            <LargeContainer>
-              <Button
-                marginTop="2rem"
-                colorScheme="yellow"
-                onClick={() => signIn()}
-              >
-                Sign in
-              </Button>
-            </LargeContainer>
-          </>
-        )}
       </Hero>
 
       {session ? (
@@ -132,7 +108,9 @@ export default function Alarmsystems() {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Heading as="h2"> Deine Alarmsysteme</Heading>
+                <Heading as="h2" variant="medium">
+                  Deine Alarmsysteme
+                </Heading>
 
                 {alarmsystems ? (
                   alarmsystems.alarmsystems.map((alarmsystem) => {
@@ -168,12 +146,13 @@ export default function Alarmsystems() {
             >
               <Flex
                 direction="column"
-                width={{ base: "90%", sm: "90%", md: "50%", lg: "50%" }}
                 margin="2rem"
                 justifyContent="center"
                 alignItems="center"
               >
-                <Heading as="h2"> Neues Alarmsystem anlegen</Heading>
+                <Heading as="h2" variant="medium">
+                  Neues Alarmsystem anlegen
+                </Heading>
 
                 <Input
                   size="lg"
@@ -193,6 +172,7 @@ export default function Alarmsystems() {
       ) : (
         <></>
       )}
+      <Footer />
     </>
   );
 }

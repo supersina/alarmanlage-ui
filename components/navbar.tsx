@@ -1,7 +1,7 @@
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Button, Flex } from "@chakra-ui/react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 export const Navbar = () => {
   const { data: session } = useSession();
@@ -13,7 +13,6 @@ export const Navbar = () => {
         justify="space-between"
         wrap="wrap"
         width="100%"
-        // marginBottom="1rem"
         borderBottom="1px solid #eaeaea"
         p={{ base: 2, sm: 2 }}
         pr={{ base: 2, sm: 8 }}
@@ -25,35 +24,44 @@ export const Navbar = () => {
             </a>
           </Link>
         </Box>
-        <Flex
-          width={{ base: "80%", sm: "60%", md: "30%", lg: "30%" }}
-          direction="row"
-          alignItems="flex-end"
-          //marginTop="2rem"
-          justifyContent="space-between"
-        >
-          <Link href="/">
-            <a>Start</a>
-          </Link>
-          {session ? (
-            <>
-              <Link href="/alarms">
-                <a>Alarme</a>
-              </Link>
-              <Link href="/alarmsystems">
-                <a>Alarmsysteme</a>
-              </Link>
-            </>
-          ) : (
-            <></>
-          )}
-          <Link href="/about">
-            <a>Über uns</a>
-          </Link>
-          <Link href="/">
-            <a>Kontakt</a>
-          </Link>
-        </Flex>
+
+        {session ? (
+          <Flex
+            width={{ base: "80%", xs: "90%", sm: "80%", md: "50%", lg: "40%" }}
+            direction="row"
+            alignItems="flex-end"
+            justifyContent="space-between"
+          >
+            <Link href="/">
+              <a>Start</a>
+            </Link>
+            <Link href="/alarms">
+              <a>Alarme</a>
+            </Link>
+            <Link href="/alarmsystems">
+              <a>Alarmsysteme</a>
+            </Link>
+            <Link href="/settings">
+              <a>Einstellungen</a>
+            </Link>
+
+            <Button
+              width="fit-content"
+              colorScheme="yellow"
+              onClick={() => signOut()}
+            >
+              Sign out
+            </Button>
+          </Flex>
+        ) : (
+          <Button
+            width="fit-content"
+            colorScheme="yellow"
+            onClick={() => signIn()}
+          >
+            Sign In
+          </Button>
+        )}
       </Flex>
     </>
   );

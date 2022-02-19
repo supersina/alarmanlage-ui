@@ -1,15 +1,12 @@
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { Flex, Heading, Text } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 import { EditUsrDataForm } from "../components/edit-usr-data-form";
 import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
-import { EditAlarmsystemDataForm } from "../components/edit-alarmsystem-data-form";
-import { useState } from "react";
-import { Input } from "@chakra-ui/react";
+import { Footer } from "../components/footer";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -26,7 +23,7 @@ export default function Settings() {
     isValidating: isValidatingUser,
   } = useSWR<UserDataAreaProps, Error>("/api/user", fetcher);
 
-  if (userError) return <div>failed to load</div>;
+  // if (userError) return <div>failed to load</div>;
   if (isValidatingUser) return <div>loading...</div>;
 
   return (
@@ -40,16 +37,6 @@ export default function Settings() {
       <Hero src={"/about1600x500.jpg"}>
         {session ? (
           <>
-            <Flex width="100%" justifyContent="flex-end">
-              <Button
-                width="fit-content"
-                margin="2rem"
-                colorScheme="yellow"
-                onClick={() => signOut()}
-              >
-                Sign out
-              </Button>
-            </Flex>
             <LargeContainer>
               <Flex
                 direction="column"
@@ -69,21 +56,6 @@ export default function Settings() {
             <Text>Bitte Logge dich ein, um Deine private Seite zu sehen!</Text>
           </LargeContainer>
         )}
-        {session ? (
-          <></>
-        ) : (
-          <>
-            <LargeContainer>
-              <Button
-                marginTop="2rem"
-                colorScheme="yellow"
-                onClick={() => signIn()}
-              >
-                Sign in
-              </Button>
-            </LargeContainer>
-          </>
-        )}
       </Hero>
 
       {session ? (
@@ -102,7 +74,9 @@ export default function Settings() {
                 justifyContent="center"
                 alignItems="center"
               >
-                <Heading as="h2"> Deine persönlichen Daten</Heading>
+                <Heading as="h2" variant="medium">
+                  Deine persönlichen Daten
+                </Heading>
                 <EditUsrDataForm initialUser={userdata}></EditUsrDataForm>
               </Flex>
             </Flex>
@@ -111,6 +85,7 @@ export default function Settings() {
       ) : (
         <></>
       )}
+      <Footer />
     </>
   );
 }
