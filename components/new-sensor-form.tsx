@@ -1,16 +1,4 @@
-import {
-  Button,
-  Flex,
-  Heading,
-  Input,
-  Switch,
-  Table,
-  Tbody,
-  Text,
-  Th,
-  Thead,
-  Tr,
-} from "@chakra-ui/react";
+import { Button, Input, Table, Tbody, Th, Tr } from "@chakra-ui/react";
 import { useState } from "react";
 
 async function saveSensor(sensor) {

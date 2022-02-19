@@ -1,7 +1,6 @@
 import {
   Button,
   Flex,
-  Heading,
   Input,
   Switch,
   Table,
@@ -11,10 +10,11 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { AlarmSystem } from "@prisma/client";
 import { useState } from "react";
 import { NewSensorForm } from "./new-sensor-form";
 
-async function saveAlarmSystem(alarmsystem) {
+async function saveAlarmSystem(alarmsystem: AlarmSystem) {
   const response = await fetch(`/api/alarmsystems/${alarmsystem.id}`, {
     method: "PATCH",
     body: JSON.stringify(alarmsystem),
@@ -30,7 +30,7 @@ async function saveAlarmSystem(alarmsystem) {
   }
 }
 
-async function deleteSensor(sensorId, alarmsystemId) {
+async function deleteSensor(sensorId: string, alarmsystemId: string) {
   const response = await fetch(
     `/api/alarmsystems/${alarmsystemId}/${sensorId}`,
     {
@@ -63,12 +63,12 @@ async function deleteAlarmSystem(alarmsystem) {
   }
 }
 
-export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
+export const EditAlarmsystemDataForm = ({ alarmsystem }) => {
   const [alarmSystem, setAlarmSystem] = useState({
-    id: initialAlarmsystem.alarmsystem.id,
-    isActive: initialAlarmsystem.alarmsystem.isActive,
-    name: initialAlarmsystem.alarmsystem.name,
-    sensors: initialAlarmsystem.alarmsystem.sensors,
+    id: alarmsystem.id,
+    isActive: alarmsystem.isActive,
+    name: alarmsystem.name,
+    sensors: alarmsystem.sensors,
   });
 
   const [isEnabled, setIsEnabled] = useState(false);
@@ -114,30 +114,30 @@ export const EditAlarmsystemDataForm = (initialAlarmsystem) => {
       margin="2rem"
       justifyContent="center"
       alignItems="center"
-      background="black"
     >
-      <Flex direction="row">
-        <Heading>
-          <Input
-            border="none"
-            size="lg"
-            name="name"
-            value={alarmSystem.name ? alarmSystem.name : ""}
-            placeholder="Name"
-            onChange={updateData}
-          />
-        </Heading>
+      <Button align="right" onClick={() => deleteAlarmSystem(alarmSystem)}>
+        Alarmsystem löschen
+      </Button>
+      <Flex direction="row" margin="2rem" alignItems="center">
+        <Text marginRight="1rem">Name</Text>
+        <Input
+          size="lg"
+          marginRight="1rem"
+          name="name"
+          value={alarmSystem.name ? alarmSystem.name : ""}
+          placeholder="Name"
+          onChange={updateData}
+        />
 
         <Flex justify="center" align="center">
+          <Text marginRight="1rem">Status</Text>
           <Switch
             id="status-switch"
             name="isActive"
+            marginRight="1rem"
             isChecked={alarmSystem.isActive}
             onChange={updateData}
           />
-          <Button onClick={() => deleteAlarmSystem(alarmSystem)} margin="2rem">
-            Löschen
-          </Button>
         </Flex>
       </Flex>
 

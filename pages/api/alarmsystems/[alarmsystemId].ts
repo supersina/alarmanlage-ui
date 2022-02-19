@@ -16,10 +16,18 @@ const alarmSystemHandler = async (
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  //GET ALARM SYSTEM
+  const { alarmsystemId } = req.query;
+  //check alarm systems of session user
+  if (typeof alarmsystemId !== "string") {
+    return res.status(405).json({
+      message: "sensor update only possible for single alarmsystem",
+    });
+  }
+
   if (req.method == "GET") {
-    const alarmsystems = await prismaClient.alarmSystem.findMany({
-      where: { userId: session?.user.id },
+    //GET ALARM SYSTEM
+    const alarmsystem = await prismaClient.alarmSystem.findMany({
+      where: { userId: session?.user.id, id: alarmsystemId },
       select: {
         id: true,
         name: true,
@@ -43,7 +51,7 @@ const alarmSystemHandler = async (
       },
     });
 
-    res.json({ alarmsystems });
+    res.json(alarmsystem[0]);
   }
 
   //CHANGE ALARM SYSTEM
@@ -58,15 +66,6 @@ const alarmSystemHandler = async (
         isActive: alarmSystemData.isActive,
       },
     });
-
-    //check alarm systems of session user
-    const { alarmsystemId } = req.query;
-
-    if (typeof alarmsystemId !== "string") {
-      return res.status(405).json({
-        message: "sensor update only possible for single alarmsystem",
-      });
-    }
 
     const sessionAlarmSystem = await prismaClient.alarmSystem.findMany({
       where: { userId: session?.user.id, id: alarmsystemId },
