@@ -1,11 +1,9 @@
-import { useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 import Head from "next/head";
 import { Flex, Heading, Text } from "@chakra-ui/react";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
-import { Footer } from "../components/footer";
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -41,7 +39,6 @@ export default function Home() {
           </Flex>
         </LargeContainer>
       </Hero>
-      <Footer />
     </>
   );
 }

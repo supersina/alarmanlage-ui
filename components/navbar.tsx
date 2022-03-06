@@ -1,68 +1,120 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
+import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useState } from "react";
+import { colors } from "../theme/colors";
+import { AiFillHome } from "react-icons/ai";
+
+const navlinks = [
+  { label: "Start", href: "/" },
+  { label: "Alarme", href: "/alarms" },
+  { label: "Alarmsysteme", href: "/alarmsystems" },
+  { label: "Einstellungen", href: "/settings" },
+];
 
 export const Navbar = () => {
   const { data: session } = useSession();
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
+    <Flex direction="column">
       <Flex
         as="nav"
         justify="space-between"
+        alignItems="center"
         wrap="wrap"
         width="100%"
         borderBottom="1px solid #eaeaea"
         p={{ base: 2, sm: 2 }}
         pr={{ base: 2, sm: 8 }}
+        backgroundColor="black"
       >
-        <Box width="40px" height="40px">
+        <Box borderRadius="1rem">
           <Link href="/">
             <a>
-              <Image src="/favicon.ico" width={50} height={50} alt=""></Image>
+              <AiFillHome size={30} />
             </a>
           </Link>
         </Box>
+        <Box>
+          <Flex direction="row" display={{ base: "none", sm: "block" }}>
+            {session ? (
+              <Flex direction="row">
+                {navlinks.map((navlink) => {
+                  return (
+                    <Box key={navlink.href} marginRight="1rem">
+                      <Link href={navlink.href}>{navlink.label}</Link>
+                    </Box>
+                  );
+                })}
+                <Box
+                  width="fit-content"
+                  color={colors.headingColor}
+                  onClick={() => signOut()}
+                >
+                  Abmelden
+                </Box>
+              </Flex>
+            ) : (
+              <Box
+                width="fit-content"
+                color={colors.headingColor}
+                onClick={() => signIn()}
+              >
+                Anmelden / Registrieren
+              </Box>
+            )}
+          </Flex>
 
+          <HamburgerIcon
+            w={6}
+            h={6}
+            display={{ base: isOpen ? "none" : "block", sm: "none" }}
+            onClick={() => setIsOpen(!isOpen)}
+          ></HamburgerIcon>
+          <CloseIcon
+            width={4}
+            height={4}
+            display={{ base: isOpen ? "block" : "none", sm: "none" }}
+            onClick={() => setIsOpen(!isOpen)}
+          ></CloseIcon>
+        </Box>
+      </Flex>
+      <Flex
+        backgroundColor="black"
+        display={{ base: isOpen ? "block" : "none", sm: "none" }}
+      >
         {session ? (
-          <Flex
-            width={{ base: "80%", xs: "90%", sm: "80%", md: "50%", lg: "40%" }}
-            direction="row"
-            alignItems="flex-end"
-            justifyContent="space-between"
-          >
-            <Link href="/">
-              <a>Start</a>
-            </Link>
-            <Link href="/alarms">
-              <a>Alarme</a>
-            </Link>
-            <Link href="/alarmsystems">
-              <a>Alarmsysteme</a>
-            </Link>
-            <Link href="/settings">
-              <a>Einstellungen</a>
-            </Link>
-
-            <Button
+          <Flex direction="column" alignItems="center">
+            {navlinks.map((navlink) => {
+              return (
+                <Box key={navlink.href} width="fit-content" margin="0.75rem">
+                  <Link href={navlink.href}>{navlink.label}</Link>
+                </Box>
+              );
+            })}
+            <Box
               width="fit-content"
-              colorScheme="yellow"
+              color={colors.headingColor}
               onClick={() => signOut()}
+              margin="0.75rem"
             >
-              Sign out
-            </Button>
+              Abmelden
+            </Box>
           </Flex>
         ) : (
-          <Button
-            width="fit-content"
-            colorScheme="yellow"
+          <Flex
+            color={colors.headingColor}
             onClick={() => signIn()}
+            margin="1rem"
+            justifyContent="center"
           >
-            Sign In
-          </Button>
+            <Box>Sign In</Box>
+          </Flex>
         )}
       </Flex>
-    </>
+    </Flex>
   );
 };

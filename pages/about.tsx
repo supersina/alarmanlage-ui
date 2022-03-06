@@ -4,7 +4,6 @@ import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 
 import { LargeContainer, SmallContainer } from "../components/container";
 import { Hero } from "../components/hero";
-import { Footer } from "../components/footer";
 
 export default function About() {
   return (
@@ -34,7 +33,6 @@ export default function About() {
           </Flex>
         </LargeContainer>
       </Hero>
-      <Footer></Footer>
     </>
   );
 }

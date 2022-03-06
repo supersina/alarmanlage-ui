@@ -8,7 +8,6 @@ import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
 import { EditAlarmsystemDataForm } from "../../components/edit-alarmsystem-data-form";
 import { useRouter } from "next/router";
-import { Footer } from "../../components/footer";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -78,7 +77,6 @@ export default function Alarmsystem() {
       ) : (
         <></>
       )}
-      <Footer />
     </>
   );
 }

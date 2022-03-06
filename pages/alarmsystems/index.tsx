@@ -8,7 +8,6 @@ import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
 import { useState } from "react";
 import Link from "next/link";
-import { Footer } from "../../components/footer";
 
 async function saveNewAlarmSystem(alarmsystem) {
   const response = await fetch("/api/alarmsystems/", {
@@ -172,7 +171,6 @@ export default function Alarmsystems() {
       ) : (
         <></>
       )}
-      <Footer />
     </>
   );
 }
