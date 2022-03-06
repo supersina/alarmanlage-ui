@@ -6,7 +6,6 @@ import { Hero } from "../components/hero";
 import { EditUsrDataForm } from "../components/edit-usr-data-form";
 import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
-import { Footer } from "../components/footer";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -85,7 +84,6 @@ export default function Settings() {
       ) : (
         <></>
       )}
-      <Footer />
     </>
   );
 }

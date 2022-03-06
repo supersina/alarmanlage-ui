@@ -1,7 +1,6 @@
 import { FC } from "react";
 import Image from "next/image";
 import { Box } from "@chakra-ui/react";
-import { Navbar } from "../components/navbar";
 import { Flex } from "@chakra-ui/react";
 
 interface Props {
@@ -11,7 +10,7 @@ interface Props {
 
 export const Hero: FC<Props> = ({ src, children }) => {
   return (
-    <>
+    <Box>
       <Box position="relative" width="100vw" height={{ base: "80vh" }}>
         <Image
           src={src}
@@ -27,10 +26,9 @@ export const Hero: FC<Props> = ({ src, children }) => {
           justifyContent="space-between"
           float="right"
         >
-          <Navbar></Navbar>
           <Box>{children}</Box>
         </Flex>
       </Box>
-    </>
+    </Box>
   );
 };

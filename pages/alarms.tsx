@@ -18,7 +18,6 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { SensorEventTable } from "../components/sensorevent-table";
-import { Footer } from "../components/footer";
 
 type AlarmSystemProps = {
   alarmsystems: AlarmSystem[];
@@ -117,7 +116,6 @@ export default function Alarms() {
           <></>
         )}
       </LargeContainer>
-      <Footer />
     </>
   );
 }
