@@ -52,7 +52,7 @@ function getUsers(): User[] {
     {
       id: "3",
       name: "Sina Sinsch",
-      email: "sinschkoli@gmail.com",
+      email: "sinschko@sinsch.de",
       image: null,
       emailVerified: new Date(),
       createdAt: new Date(),
