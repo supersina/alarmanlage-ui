@@ -1,8 +1,8 @@
 import Head from "next/head";
 
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Flex, Heading, Text } from "@chakra-ui/react";
 
-import { LargeContainer, SmallContainer } from "../components/container";
+import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 
 export default function About() {

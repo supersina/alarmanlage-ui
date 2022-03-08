@@ -10,11 +10,11 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { AlarmSystem } from "@prisma/client";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import { AlarmSystemGet } from "../pages/api/alarmsystems/[alarmsystemId]";
 import { NewSensorForm } from "./new-sensor-form";
 
-async function saveAlarmSystem(alarmsystem: AlarmSystem) {
+async function saveAlarmSystem(alarmsystem: AlarmSystemGet) {
   const response = await fetch(`/api/alarmsystems/${alarmsystem.id}`, {
     method: "PATCH",
     body: JSON.stringify(alarmsystem),
@@ -22,9 +22,7 @@ async function saveAlarmSystem(alarmsystem: AlarmSystem) {
   if (!response.ok) {
     alert("Achtung, Fehler! Änderungen konnten nicht gespeichert werden!");
     throw new Error(response.statusText);
-  }
-  //todo: alert with success message
-  else {
+  } else {
     alert("Änderungen wurden gespeichert!");
     return response;
   }
@@ -47,7 +45,7 @@ async function deleteSensor(sensorId: string, alarmsystemId: string) {
   }
 }
 
-async function deleteAlarmSystem(alarmsystem) {
+async function deleteAlarmSystem(alarmsystem: AlarmSystemGet) {
   const alarmsystemId = alarmsystem.id;
   console.log("aufruf id: ", alarmsystemId);
   const response = await fetch(`/api/alarmsystems/${alarmsystemId}}`, {
@@ -63,7 +61,11 @@ async function deleteAlarmSystem(alarmsystem) {
   }
 }
 
-export const EditAlarmsystemDataForm = ({ alarmsystem }) => {
+export const EditAlarmsystemDataForm = ({
+  alarmsystem,
+}: {
+  alarmsystem: AlarmSystemGet;
+}) => {
   const [alarmSystem, setAlarmSystem] = useState({
     id: alarmsystem.id,
     isActive: alarmsystem.isActive,
@@ -73,10 +75,12 @@ export const EditAlarmsystemDataForm = ({ alarmsystem }) => {
 
   const [isEnabled, setIsEnabled] = useState(false);
 
-  const updateData = (e) => {
-    let valueToSet = e.target.value;
+  const updateData = (e: ChangeEvent<HTMLInputElement>) => {
+    let valueToSet;
     if (e.target.name === "isActive") {
       valueToSet = e.target.checked;
+    } else {
+      valueToSet = e.target.value;
     }
 
     setAlarmSystem({

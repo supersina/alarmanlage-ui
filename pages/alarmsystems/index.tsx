@@ -1,15 +1,20 @@
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/react";
-import { Flex, Heading, Input, List, Text } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
+import { Flex, Heading, Input, List, ListItem, Text } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../../components/container";
 import { Hero } from "../../components/hero";
 import useSWR from "swr";
-import { AlarmSystem } from "@prisma/client";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Link from "next/link";
+import { AlarmSystemGetWithDate } from "../api/alarmsystems";
 
-async function saveNewAlarmSystem(alarmsystem) {
+type NewAlarmSystem = Pick<
+  AlarmSystemGetWithDate["alarmsystems"][0],
+  "isActive" | "name"
+>;
+
+async function saveNewAlarmSystem(alarmsystem: NewAlarmSystem) {
   const response = await fetch("/api/alarmsystems/", {
     method: "POST",
     body: JSON.stringify(alarmsystem),
@@ -26,12 +31,8 @@ async function saveNewAlarmSystem(alarmsystem) {
 }
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-type UserDataAreaProps = {
-  alarmsystems: AlarmSystem[];
-};
-
 export default function Alarmsystems() {
-  const [newAlarmSystem, setNewAlarmSystem] = useState({
+  const [newAlarmSystem, setNewAlarmSystem] = useState<NewAlarmSystem>({
     isActive: false,
     name: "",
   });
@@ -41,12 +42,12 @@ export default function Alarmsystems() {
     data: alarmsystems,
     error: alarmError,
     isValidating: isValidatingAlarmSystems,
-  } = useSWR<UserDataAreaProps, Error>("/api/alarmsystems", fetcher);
+  } = useSWR<AlarmSystemGetWithDate, Error>("/api/alarmsystems", fetcher);
 
   if (alarmError) return <div>failed to load</div>;
   if (isValidatingAlarmSystems) return <div>loading...</div>;
 
-  const updateNewData = (e) => {
+  const updateNewData = (e: ChangeEvent<HTMLInputElement>) => {
     let valueToSet = e.target.value;
 
     setNewAlarmSystem({
@@ -112,24 +113,31 @@ export default function Alarmsystems() {
                 </Heading>
 
                 {alarmsystems ? (
-                  alarmsystems.alarmsystems.map((alarmsystem) => {
-                    return (
-                      <List key={alarmsystem.id}>
-                        <Flex direction="row" margin="1rem" align="center">
-                          <Text marginRight="2rem">{alarmsystem.name}</Text>
-                          <Button>
-                            <Link
-                              href={`/alarmsystems/${encodeURIComponent(
-                                alarmsystem.id
-                              )}`}
-                            >
-                              <a>Bearbeiten</a>
-                            </Link>
-                          </Button>
-                        </Flex>
-                      </List>
-                    );
-                  })
+                  <List>
+                    {alarmsystems.alarmsystems.map((alarmsystem) => {
+                      return (
+                        <ListItem key={alarmsystem.id}>
+                          <Flex
+                            direction="row"
+                            margin="1rem"
+                            align="center"
+                            justifyContent="space-between"
+                          >
+                            <Text marginRight="2rem">{alarmsystem.name}</Text>
+                            <Button>
+                              <Link
+                                href={`/alarmsystems/${encodeURIComponent(
+                                  alarmsystem.id
+                                )}`}
+                              >
+                                <a>Bearbeiten</a>
+                              </Link>
+                            </Button>
+                          </Flex>
+                        </ListItem>
+                      );
+                    })}
+                  </List>
                 ) : (
                   <Text>Keine Alarmsysteme vorhanden</Text>
                 )}

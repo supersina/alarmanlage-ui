@@ -1,7 +1,5 @@
-import { Flex, Text, Link } from "@chakra-ui/react";
-import { SunIcon } from "@chakra-ui/icons";
-
-import { colors } from "../theme/colors.js";
+import { Flex, Text } from "@chakra-ui/react";
+import Link from "next/link";
 
 export const Footer = () => {
   return (

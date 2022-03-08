@@ -1,8 +1,30 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { prismaClient } from "../../../prismaClient";
+import { isAlarmSystem } from "../../../validation/validation";
 
 //GET, POST
+
+export type AlarmSystemGetWithDate = {
+  alarmsystems: {
+    id: string;
+    name: string | null;
+    isActive: boolean;
+    sensors: {
+      id: string;
+      name: string;
+      alarmSystemId: string;
+      sensorCodeOpen: string;
+      sensorCodeClosed: string;
+      sensorEvents: {
+        id: string;
+        sensorId: string;
+        sensorCode: string;
+        createdAt: Date;
+      }[];
+    }[];
+  }[];
+};
 
 const alarmSystemHandler = async (
   req: NextApiRequest,
@@ -51,6 +73,10 @@ const alarmSystemHandler = async (
   //CREATE ALARM SYSTEM
   if (req.method == "POST") {
     const alarmSystemData = JSON.parse(req.body);
+
+    if (!isAlarmSystem(alarmSystemData)) {
+      return res.status(422).json({ message: "data invalid" });
+    }
 
     const usr = await prismaClient.user.findUnique({
       where: {
