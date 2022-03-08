@@ -8,6 +8,7 @@ import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
 import { EditAlarmsystemDataForm } from "../../components/edit-alarmsystem-data-form";
 import { useRouter } from "next/router";
+import { AlarmSystemGet } from "../api/alarmsystems/[alarmsystemId]";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -20,7 +21,10 @@ export default function Alarmsystem() {
     data: alarmsystem,
     error: alarmError,
     isValidating: isValidatingAlarmSystems,
-  } = useSWR<AlarmSystem, Error>(`/api/alarmsystems/${alarmsystemId}`, fetcher);
+  } = useSWR<AlarmSystemGet, Error>(
+    `/api/alarmsystems/${alarmsystemId}`,
+    fetcher
+  );
 
   if (alarmError) return <div>failed to load</div>;
   if (isValidatingAlarmSystems) return <div>loading...</div>;

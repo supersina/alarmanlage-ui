@@ -6,12 +6,9 @@ import { Hero } from "../components/hero";
 import { EditUsrDataForm } from "../components/edit-usr-data-form";
 import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
+import { UserGet } from "./api/user";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
-
-type UserDataAreaProps = {
-  alarmsystems: AlarmSystem[];
-};
 
 export default function Settings() {
   const { data: session } = useSession();
@@ -20,7 +17,7 @@ export default function Settings() {
     data: userdata,
     error: userError,
     isValidating: isValidatingUser,
-  } = useSWR<UserDataAreaProps, Error>("/api/user", fetcher);
+  } = useSWR<UserGet, Error>("/api/user", fetcher);
 
   // if (userError) return <div>failed to load</div>;
   if (isValidatingUser) return <div>loading...</div>;
@@ -76,7 +73,7 @@ export default function Settings() {
                 <Heading as="h2" variant="medium">
                   Deine persönlichen Daten
                 </Heading>
-                <EditUsrDataForm initialUser={userdata}></EditUsrDataForm>
+                {userdata ? <EditUsrDataForm initialUser={userdata} /> : null}
               </Flex>
             </Flex>
           </LargeContainer>

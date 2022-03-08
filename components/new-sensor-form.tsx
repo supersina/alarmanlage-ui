@@ -1,14 +1,18 @@
 import { Button, Input, Table, Tbody, Th, Tr } from "@chakra-ui/react";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
+import { validateSensorPost } from "../validation/validation";
 
-async function saveSensor(sensor) {
-  const response = await fetch(
-    `/api/alarmsystems/${sensor.alarmSystemId}/sensor`,
-    {
-      method: "POST",
-      body: JSON.stringify(sensor),
-    }
-  );
+async function saveSensor(sensor: any, alarmSystemId: string) {
+  if (!validateSensorPost(sensor)) {
+    alert(
+      "Achtung, Fehler! Dein neuer Sensor konnten nicht gespeichert werden!"
+    );
+    return;
+  }
+  const response = await fetch(`/api/alarmsystems/${alarmSystemId}/sensor`, {
+    method: "POST",
+    body: JSON.stringify(sensor),
+  });
   if (!response.ok) {
     alert(
       "Achtung, Fehler! Dein neuer Sensor konnten nicht gespeichert werden!"
@@ -20,15 +24,14 @@ async function saveSensor(sensor) {
   }
 }
 
-export const NewSensorForm = ({ alarmSystemId }) => {
+export const NewSensorForm = ({ alarmSystemId }: { alarmSystemId: string }) => {
   const [newSensor, setNewSensor] = useState({
     name: "",
     sensorCodeOpen: "",
     sensorCodeClosed: "",
-    alarmSystemId: alarmSystemId,
   });
 
-  const updateNewSensor = (e) => {
+  const updateNewSensor = (e: ChangeEvent<HTMLInputElement>) => {
     setNewSensor({
       ...newSensor,
       [e.target.name]: e.target.value,
@@ -41,7 +44,7 @@ export const NewSensorForm = ({ alarmSystemId }) => {
       newSensor.sensorCodeOpen !== "" &&
       newSensor.sensorCodeClosed !== ""
     ) {
-      saveSensor(newSensor);
+      saveSensor(newSensor, alarmSystemId);
     }
   }
 

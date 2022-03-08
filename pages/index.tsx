@@ -6,7 +6,7 @@ import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 
 export default function Home() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const loading = status === "loading";
 
   if (loading) {

@@ -11,7 +11,7 @@ const sensorHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     typeof alarmsystemId !== "string" ||
     typeof sensorId !== "string"
   ) {
-    return res.status(405).json({ message: "data missing" });
+    return res.status(422).json({ message: "data invalid" });
   }
   const session = await getSession({ req });
 

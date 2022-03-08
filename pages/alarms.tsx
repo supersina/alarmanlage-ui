@@ -1,12 +1,10 @@
 import Head from "next/head";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { Flex, Heading, Text } from "@chakra-ui/layout";
-import { Button } from "@chakra-ui/button";
 import { LargeContainer } from "../components/container";
 import { Hero } from "../components/hero";
 import useSWR from "swr";
 import { AlarmSystem } from "@prisma/client";
-import { colors } from "../theme/colors";
 import { useState } from "react";
 import {
   FormControl,
@@ -15,13 +13,9 @@ import {
   HStack,
   Radio,
   RadioGroup,
-  Select,
 } from "@chakra-ui/react";
 import { SensorEventTable } from "../components/sensorevent-table";
-
-type AlarmSystemProps = {
-  alarmsystems: AlarmSystem[];
-};
+import { AlarmSystemGetWithDate } from "./api/alarmsystems";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -31,14 +25,13 @@ export default function Alarms() {
     data: alarmsystemData,
     error,
     isValidating,
-  } = useSWR<AlarmSystemProps, Error>("/api/alarmsystems/", fetcher);
+  } = useSWR<AlarmSystemGetWithDate, Error>("/api/alarmsystems/", fetcher);
 
   const [alarmsystemId, setAlarmsystemId] = useState("");
 
-  const handleChange = (e) => {
-    console.log("Event", e);
-    setAlarmsystemId(e);
-    console.log("alarm system: ", alarmsystemId);
+  console.log("data in alarms:", alarmsystemData);
+  const handleChange = (id: string) => {
+    setAlarmsystemId(id);
   };
 
   if (error) return <div>failed to load</div>;

@@ -2,13 +2,28 @@ import { LargeContainer } from "./container";
 import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { AlarmSystemGetWithDate } from "../pages/api/alarmsystems";
 
-export const SensorEventTable = ({ alarmsystemData, alarmsystemId }) => {
-  const [data, setData] = useState([]);
-  const [sortType, setSortType] = useState("date");
+interface ISensorEventData {
+  name: string;
+  event: string;
+  date: Date;
+  full_date: string;
+}
 
-  let list: { name: string; event: string; date: any; full_date: string }[] =
-    [];
+type SortType = "date" | "name";
+
+export const SensorEventTable = ({
+  alarmsystemData,
+  alarmsystemId,
+}: {
+  alarmsystemData: AlarmSystemGetWithDate;
+  alarmsystemId: string;
+}) => {
+  const [data, setData] = useState<ISensorEventData[]>([]);
+  const [sortType, setSortType] = useState<SortType>("date");
+
+  let list: ISensorEventData[] = [];
 
   alarmsystemData.alarmsystems.map((alarmData) => {
     if (alarmData.id === alarmsystemId) {
@@ -23,41 +38,33 @@ export const SensorEventTable = ({ alarmsystemData, alarmsystemId }) => {
             hour: "numeric",
             minute: "numeric",
           }).format(new Date(sensorEvent.createdAt));
-          if (sensorEvent.sensorCode === sensorCodeOpen) {
-            list.push({
-              name: sensor.name,
-              event: `${sensor.name} auf`,
-              date: date,
-              full_date: full_date,
-            });
-          } else
-            list.push({
-              name: sensor.name,
-              event: `${sensor.name} zu`,
-              date: date,
-              full_date: full_date,
-            });
+
+          const event =
+            sensorEvent.sensorCode === sensorCodeOpen
+              ? `${sensor.name} auf`
+              : `${sensor.name} zu`;
+
+          list.push({
+            name: sensor.name,
+            event,
+            date: date,
+            full_date: full_date,
+          });
         });
       });
     }
   });
 
   useEffect(() => {
-    const sortArray = (type) => {
-      const types = {
-        name: "name",
-        date: "date",
-      };
-      const sortProperty = types[type];
-      let sorted = [];
-      if (sortProperty === "date") {
+    const sortArray = (type: SortType) => {
+      let sorted: ISensorEventData[] = [];
+
+      if (type === "date") {
         sorted = [...list].sort(
-          (a, b) => new Date(b[sortProperty]) - new Date(a[sortProperty])
+          (a, b) => new Date(b[type]).valueOf() - new Date(a[type]).valueOf()
         );
       } else {
-        sorted = [...list].sort((a, b) =>
-          b[sortProperty] < a[sortProperty] ? 1 : -1
-        );
+        sorted = [...list].sort((a, b) => (b[type] < a[type] ? 1 : -1));
       }
       setData(sorted);
     };
@@ -86,8 +93,8 @@ export const SensorEventTable = ({ alarmsystemData, alarmsystemId }) => {
             </Tr>
           </Thead>
           <Tbody>
-            {data.map((entry) => (
-              <Tr key={entry.date}>
+            {data.map((entry, index) => (
+              <Tr key={index}>
                 {console.log(entry)}
                 <Td>{entry.event}</Td>
                 <Td>{entry.full_date}</Td>

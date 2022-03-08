@@ -1,6 +1,7 @@
 import { Button, Flex, Input } from "@chakra-ui/react";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { User } from "@prisma/client";
+import { UserGet } from "../pages/api/user";
 
 async function saveUser(user: User) {
   const response = await fetch("/api/user", {
@@ -15,20 +16,21 @@ async function saveUser(user: User) {
   return await response.json();
 }
 
-export const EditUsrDataForm = ({ initialUser }) => {
+export const EditUsrDataForm = ({ initialUser }: { initialUser: UserGet }) => {
+  console.log("init user", initialUser);
   const [usr, setUsr] = useState({
-    id: initialUser.user.id,
-    name: initialUser.user.name,
-    email: initialUser.user.email,
-    emailVerified: initialUser.user.emailVerified,
-    newEmail: initialUser.user.email,
-    image: initialUser.user.image,
-    AlarmSystems: initialUser.user.AlarmSystems,
-    createdAt: initialUser.user.createdAt,
-    updatedAt: initialUser.user.updatedAt,
+    id: initialUser.id,
+    name: initialUser.name,
+    email: initialUser.email,
+    emailVerified: initialUser.emailVerified,
+    newEmail: initialUser.email,
+    image: initialUser.image,
+    alarmSystems: initialUser.alarmSystems,
+    createdAt: initialUser.createdAt,
+    updatedAt: initialUser.updatedAt,
   });
 
-  const updateData = (e) => {
+  const updateData = (e: ChangeEvent<HTMLInputElement>) => {
     setUsr({
       ...usr,
       [e.target.name]: e.target.value,

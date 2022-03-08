@@ -1,11 +1,11 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import Link from "next/link";
-import Image from "next/image";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { colors } from "../theme/colors";
 import { AiFillHome } from "react-icons/ai";
+import { useRouter } from "next/router";
 
 const navlinks = [
   { label: "Start", href: "/" },
@@ -17,6 +17,10 @@ const navlinks = [
 export const Navbar = () => {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
+  useEffect(() => {
+    setIsOpen(false);
+  }, [router.pathname]);
 
   return (
     <Flex direction="column">
